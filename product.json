@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Gan 356 XS",
+    "brand": "Gan",
+    "type": "3x3",
+    "price": [59.99, 39.99],
+    "description": "The Gan 356 XS is a flagship 3x3 speed cube with exceptional performance and customization.",
+    "images": ["https://shop.gancube.com/wp-content/uploads/2019/10/XS-%E8%B4%B4%E7%89%87.png", "https://www.gancube.com/wp-content/uploads/2023/03/GAN356-X-S-%E7%A7%BB%E5%8A%A8-%E8%8B%B1-10.25_11.png", "https://www.gancube.com/wp-content/uploads/2023/03/GAN356-X-S-%E7%A7%BB%E5%8A%A8-%E8%8B%B1-10.25_10.png", "https://www.gancube.com/wp-content/uploads/2023/03/GAN356-X-S-%E7%A7%BB%E5%8A%A8-%E8%8B%B1-10.25_12.png"],
+    "stockQuantity": 10,
+    "categories": ["659c7dbf14c26a858fa3976a", "659c7dbf14c26a858fa3976c"]
+  },
+  {
+    "name": "MoYu MF8880 RS3 M 2020",
+    "brand": "MoYu",
+    "type": "3x3",
+    "price": [19.99, 19.99],
+    "description": "The MoYu RS3 M 2020 is a budget-friendly 3x3 speed cube with surprising performance and magnetic feel.",
+    "images": ["https://www.moyustore.com/cdn/shop/products/moyustore-moyu-rs3m-magnetic-cube-3x3x3.jpg?v=1608524242", "https://www.moyustore.com/cdn/shop/products/moyustore-moyu-rs3m-magnetic-cube-3x3x3_1.jpg?v=1608524246", "https://www.moyustore.com/cdn/shop/products/moyustore-moyu-rs3m-magnetic-cube-3x3x3_2.jpg?v=1608524249", "https://www.moyustore.com/cdn/shop/products/moyustore-moyu-rs3m-magnetic-cube-3x3x3_3.jpg?v=1608524252", "https://www.moyustore.com/cdn/shop/products/5912f6bd-3151-4150-b8a9-d4c171013a6a.jpg?v=1615424579"],
+    "stockQuantity": 25,
+    "categories": ["659c7dbf14c26a858fa3976a", "659c7dbf14c26a858fa3976d"]
+  },
+  {
+    "name": "Gan 14 Maglev",
+    "brand": "Gan",
+    "type": "3x3",
+    "price": [87.99, 87.99],
+    "description": "Experience the pinnacle of speed cubing with the GAN 14 MagLev. This revolutionary 3x3 boasts magnetic levitation technology, creating effortless rotations and unmatched smoothness. Dive into a world of 1296 customizable settings, tailoring the feel to your every whim. Push your limits with superior corner-cutting and unwavering stability, shattering your personal bests. Lightweight and ergonomic, the GAN 14 MagLev is a masterpiece of engineering, crafted for champions and aspiring speedsters alike. Unleash your potential. Conquer the cube. Elevate with the GAN 14 MagLev.",
+    "images": ["https://shop.gancube.com/wp-content/uploads/2023/08/14%E4%B8%BB%E5%9B%BE2%E5%89%AF%E6%9C%AC.png", "https://www.gancube.com/wp-content/uploads/2023/08/14%E5%95%86%E8%AF%A6-%E4%B8%8A_01.png", "https://www.gancube.com/wp-content/uploads/2023/08/14%E5%95%86%E8%AF%A6-%E4%B8%8A_06.png", "https://www.gancube.com/wp-content/uploads/2023/08/14%E5%95%86%E8%AF%A6-%E4%B8%8B_01.png", "https://www.gancube.com/wp-content/uploads/2023/10/14%E5%95%86%E8%AF%A6-%E4%B8%8B_06-1.png", "https://www.gancube.com/wp-content/uploads/2023/08/14%E5%95%86%E8%AF%A6-%E4%B8%8B_07.png"],
+    "stockQuantity": 22,
+    "categories": ["659c7dbf14c26a858fa3976a", "659c7dbf14c26a858fa3976c"]
+  },
+  {
+    "name": "Gan 251 M",
+    "brand": "Gan",
+    "type": "2x2",
+    "price": [27.99, 27.99],
+    "description": "The GAN 251 M is a lightning-fast 2x2 speed cube built for performance. It's ultra-lightweight (under 60g!), boasts powerful magnets for snappy turns, and boasts extensive tuning options to customize the feel to your exact preference.",
+    "images": ["https://shop.gancube.com/wp-content/uploads/2019/07/251-m.png", "https://www.gancube.com/wp-content/uploads/2019/07/251-M_01-300x300.png"],
+    "stockQuantity": 15,
+    "categories": ["659c7dbf14c26a858fa39769", "659c7dbf14c26a858fa3976c"]
+  },
+  {
+    "name": "MoYu MF8826 MeiLong",
+    "brand": "MoYu",
+    "type": "4x4",
+    "price": [9.99, 9.99],
+    "description": "The MoYu MeiLong 4x4 is a budget-friendly speed cube that is perfect for beginner and intermediate cubers. It has a smooth turning mechanism and accurate corner cutting, making it a great choice for anyone who wants to improve their solving times.",
+    "images": ["https://www.moyustore.com/cdn/shop/products/b004bbf8-02e3-44aa-9c15-d58cabc36cf4-sw.jpg?v=1622451951", "https://www.moyustore.com/cdn/shop/products/931a07cd-57d6-460a-83d6-523980e8da24-sw.jpg?v=1622451958", "https://irobotbox-hd1.oss-cn-hangzhou.aliyuncs.com/1266/ProductImages/2718063/2019/05/29/0d2e6663b63a4e488406c53175fc33ff/31a90f49-509b-4a27-ba17-35b413cdb4f3.jpg", "https://irobotbox-hd1.oss-cn-hangzhou.aliyuncs.com/1266/ProductImages/2718063/2019/05/29/a08b2f42b32e4b9ba30bc6d9fc99e670/0ff67223-14a1-4011-bb6e-9e55bdca7b7c.jpg"],
+    "stockQuantity": 18,
+    "categories": ["659c7dbf14c26a858fa3976b", "659c7dbf14c26a858fa3976d"]
+  }
+]
+
