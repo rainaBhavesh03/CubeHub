@@ -161,28 +161,28 @@ app.post('/removeproduct', async (req, res) => {
 // API to edit a specific product
 
 app.put('/editproduct/:id', async (req, res) => {
-  try {
-    const productId = req.params.id;
+    try {
+        const productId = req.params.id;
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      req.body,
-      { new: true } // Return the updated product
-    );
+        const updatedProduct = await Product.findOneAndUpdate(
+            { id: productId },
+            req.body,
+            { new: true } // Return the updated product
+        );
 
-    if (!updatedProduct) {
-      return res.status(404).json({ error: 'Product not found' });
+        if (!updatedProduct) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        res.json({
+            success: true,
+            message: 'Product updated successfully',
+            product: updatedProduct,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to update product' });
     }
-
-    res.json({
-      success: true,
-      message: 'Product updated successfully',
-      product: updatedProduct,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to update product' });
-  }
 });
 
 
@@ -238,6 +238,7 @@ app.get('/allproducts', async (req, res) => {
   }
 })
 
+
 app.get('/productdetail/:productId', async (req, res) => {
     try {
         const productId = req.params.productId;
@@ -245,45 +246,12 @@ app.get('/productdetail/:productId', async (req, res) => {
         const productDetail = await Product.aggregate([
             {
                 $match: {
-                    _id: mongoose.Types.ObjectId(productId)
+                    id: parseInt(productId)
                 }
             },
             {
-                $lookup: {
-                    from: "categories",
-                    let: { categoryIds: "$category" },
-                    pipeline: [
-                        { $match: { $expr: { $in: ["$_id", "$$categoryIds"] } } }
-                    ],
-                    as: "category"
-                }
-            },
-            {
-                $lookup: {
-                    from: "types",
-                    let: { typeIds: "$type" },
-                    pipeline: [
-                        { $match: { $expr: { $in: ["$_id", "$$typeIds"] } } }
-                    ],
-                    as: "type"
-                }
-            },
-            {
-                $addFields: {
-                    category: {
-                        $map: {
-                            input: "$category",
-                            as: "category",
-                            in: "$$category.name"
-                        }
-                    },
-                    type: {
-                        $map: {
-                            input: "$type",
-                            as: "type",
-                            in: "$$type.name"
-                        }
-                    }
+                $project: {
+                    _id: 0, 
                 }
             }
         ]);

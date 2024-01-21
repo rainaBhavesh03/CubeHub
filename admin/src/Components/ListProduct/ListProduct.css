@@ -61,7 +61,7 @@
     border: none;
     cursor: pointer;
     color: black;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     background: #eee;
     padding: 10px;
@@ -69,4 +69,19 @@
 
 .listproduct-copy-btn.copied{
     color: #00aa00;
+}
+
+.listproduct-edit-btn {
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+}
+
+.listproduct-edit-btn * {
+    text-decoration: none;
+    color: black;
 }

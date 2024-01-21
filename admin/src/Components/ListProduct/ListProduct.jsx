@@ -27,23 +27,25 @@ const ListProduct = () => {
     }
 
     useEffect(() => {
-        const clipboard = new Clipboard('.listproduct-copy-btn');
+        //const clipboard = new Clipboard('.listproduct-copy-btn');
 
-        clipboard.on('success', (e) => {
-            const productId = e.trigger.id.replace('copy-btn-', '');
-            setCopiedStates({
-                ...copiedStates,
-                [productId]: true,
-            });
-        });
+        //clipboard.on('success', (e) => {
+          //  const productId = e.trigger.id.replace('copy-btn-', '');
+            //setCopiedStates({
+              //  ...copiedStates,
+                //[productId]: true,
+            //});
+        //});
 
-        clipboard.on('error', () => {
+        //clipboard.on('error', () => {
             // Handle error
-            console.log("Coudn't copy!");
-            clipboard.destroy();
-        });
+          //  console.log("Coudn't copy!");
+            //clipboard.destroy();
+        //});
 
-        fetchProducts();
+                    //<button id={`copy-btn-${product.id}`} className={`listproduct-copy-btn ${copiedStates[product.id] ? 'copied' : ''}`} data-clipboard-text={`${product.id}`} > Copy ID </button>
+        
+            fetchProducts();
     }, []);
 
     return (
@@ -74,10 +76,9 @@ const ListProduct = () => {
                         <p>{product.type.join(', ')}</p>
                         <p>{product.category.join(', ')}</p>
                     </div>
-                    // <button id={`copy-btn-${product.id}`} className={`listproduct-copy-btn ${copiedStates[product.id] ? 'copied' : ''}`} data-clipboard-text={`${product.id}`} > Copy ID </button>
                     
                     <button id={`edit-btn-${product.id}`} className={`listproduct-edit-btn`} >
-                        <Link to={`/editproduct/${product.id}`}>Edit</Link>
+                        <Link to={`/editproduct/${encodeURIComponent(product.id)}`}>Edit</Link>
                     </button>
                 </div>
             ))}
