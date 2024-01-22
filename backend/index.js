@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const port = 4001;
 const express = require("express");
 const app = express();
@@ -12,7 +14,14 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 // connecting to the database
-mongoose.connect('mongodb://127.0.0.1:27017/test');
+console.log(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() =>
+        console.log('MongoDB connected'))
+    .catch(err => console.error(err));
 
 
 // Import models
