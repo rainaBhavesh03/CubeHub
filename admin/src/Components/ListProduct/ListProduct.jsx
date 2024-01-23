@@ -9,12 +9,13 @@ const ListProduct = () => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [success, setSuccess] = useState(null);
     // const [copiedStates, setCopiedStates] = useState({});
 
     async function fetchProducts() {
         setIsLoading(true);
         try {
-            const response = await axios.get('http://localhost:4001/allproducts');
+            const response = await axios.get('http://localhost:4001/products/allproducts');
             let newProductList = response.data;
             setProducts(newProductList);
             setError(null);
@@ -25,6 +26,20 @@ const ListProduct = () => {
             setIsLoading(false);
         }
     }
+
+    const handleRemoveProduct = async (productId, productName) => {
+        try {
+            const response = await axios.post('http://localhost:4001/products/removeproduct', { id: productId });
+            setSuccess(response.data.success);
+
+            await fetchProducts();
+            setError(null);
+            alert(`Product: ${productName}\nRemoved Succesfully!`);
+        } catch (err) {
+            setSuccess(null);
+            setError(err.response.data.error || 'Failed to remove product');
+        }
+    };
 
     useEffect(() => {
         //const clipboard = new Clipboard('.listproduct-copy-btn');
@@ -53,16 +68,10 @@ const ListProduct = () => {
             <h2>All Products</h2>
             {isLoading && <p className='listproduct-msg'>Loading products...</p>}
             {error && <p className='listproduct-msg'>Error: {error}</p>}
-            <div className='listproduct-title'>
-                <p>Name:</p>
-                <p>Image:</p>
-                <p>Type:</p>
-                <p>Category:</p>
-            </div>
             {products.map((product) => (
                 <div key={product.id} className='listproduct-info'>
                     <div className='listproduct-format'>
-                        <p>{product.name}</p>
+                        <p>Name:<br/>{product.name}</p>
                         <p className='listproduct-image'>
                             <img
                             src={
@@ -73,10 +82,11 @@ const ListProduct = () => {
                             alt={product.name}
                             />
                         </p>
-                        <p>{product.type.join(', ')}</p>
-                        <p>{product.category.join(', ')}</p>
+                        <p>Types:<br/>{product.type.join(', ')}</p>
+                        <p>Categories:<br/>{product.category.join(', ')}</p>
                     </div>
                     
+                    <button id={`remove-btn-${product.id}`} className={`listproduct-remove-btn`} onClick={() => handleRemoveProduct(product.id, product.name)}>Remove</button>
                     <button id={`edit-btn-${product.id}`} className={`listproduct-edit-btn`} >
                         <Link to={`/editproduct/${encodeURIComponent(product.id)}`}>Edit</Link>
                     </button>

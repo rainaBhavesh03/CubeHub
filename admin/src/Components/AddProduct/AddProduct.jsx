@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import  './AddProduct.css'
+import  './AddProduct.css';
 
 const AddProduct = () => {
     const [categories, setCategories] = useState([]);
@@ -18,7 +18,7 @@ const AddProduct = () => {
 
     async function fetchCategories() {
         try {
-            const response = await axios.get('http://localhost:4001/categories');
+            const response = await axios.get('http://localhost:4001/categories/categories');
             const newCategories = response.data;
             setCategories(newCategories);
         } catch (error) {
@@ -28,7 +28,7 @@ const AddProduct = () => {
 
     async function fetchTypes() {
         try {
-            const response = await axios.get('http://localhost:4001/types');
+            const response = await axios.get('http://localhost:4001/types/types');
             const newTypes = response.data;
             setTypes(newTypes);
         } catch (error) {
@@ -96,7 +96,18 @@ const AddProduct = () => {
         formData.append('old_price', oldPrice);
         formData.append('stockQuantity', quantity);
         try {
-            const response = await axios.post('http://localhost:4001/addproduct', formData);
+            const response = await axios.post('http://localhost:4001/products/addproduct', formData);
+            alert(`Product ${response.data.name} was added successfully!`);
+
+            setTitle('');
+            setOldPrice('');
+            setNewPrice('');
+            setBrand('');
+            setDescription('');
+            setImages([]);
+            setQuantity('');
+            setSelectedCategories([]);
+            setSelectedTypes([]);
         } catch (error) {
             console.error('Error adding product:', error);
         }
@@ -111,11 +122,11 @@ const AddProduct = () => {
             <div className='addproduct-price'>
                 <div className='addproduct-itemfield'>
                     <p>Old Price</p>
-                    <input className="addproduct-input" type='text' name='old_price' placeholder='Enter old price here' value={oldPrice} onChange={(e) => setOldPrice(e.target.value)}/>
+                    <input className="addproduct-input" type='number' name='old_price' placeholder='Enter old price here' value={oldPrice} onChange={(e) => setOldPrice(e.target.value)}/>
                 </div>
                 <div className='addproduct-itemfield'>
                     <p>New Price</p>
-                    <input className="addproduct-input" type='text' name='new_price' placeholder='Enter new price here' value={newPrice} onChange={(e) => setNewPrice(e.target.value)}/>
+                    <input className="addproduct-input" type='number' name='new_price' placeholder='Enter new price here' value={newPrice} onChange={(e) => setNewPrice(e.target.value)}/>
                 </div>
             </div>
             <p className='add-product-comment'>(Use Ctrl or Command btn to select multiple options)</p>
@@ -171,7 +182,7 @@ const AddProduct = () => {
                     <div key={index} className='addproduct-image'>
                         <input
                         className="addproduct-image-input"
-                        type="text"
+                        type="url"
                         name={`imageUrl[${index}]`}
                         placeholder="Enter image URL"
                         value={imageUrl}

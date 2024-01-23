@@ -7,6 +7,16 @@
     background: white;
 }
 
+.editproduct-back {
+    font-size: 16px;
+    text-decoration: none;
+    background: #eee;
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+    font-weight: 600;
+}
+
 .editproduct-itemfield {
     width: 100%;
     color: black;

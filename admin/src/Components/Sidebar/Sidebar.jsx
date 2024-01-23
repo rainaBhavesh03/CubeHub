@@ -12,11 +12,6 @@ const Sidebar = () => {
                     <p>Add Product</p>
                 </div>
             </Link>
-            <Link to={'/removeproduct'} className={`sidebar-item ${sidebar_current === '/removeproduct' ? 'sidebar-active': ''} `} style={{textDecoration:'none'}}>
-                <div className=''>
-                    <p>Remove Product</p>
-                </div>
-            </Link>
             <Link to={'/listproduct'} className={`sidebar-item ${sidebar_current === '/listproduct' ? 'sidebar-active': ''} `} style={{textDecoration:'none'}}>
                 <div className=''>
                     <p>Product List</p>

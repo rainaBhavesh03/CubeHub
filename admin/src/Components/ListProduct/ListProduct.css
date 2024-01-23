@@ -79,9 +79,21 @@
     text-align: center;
     background: #eee;
     padding: 10px;
+    margin-inline-start: 10px;
 }
 
 .listproduct-edit-btn * {
     text-decoration: none;
     color: black;
+}
+
+.listproduct-remove-btn {
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+    margin-inline-end: 10px;
 }

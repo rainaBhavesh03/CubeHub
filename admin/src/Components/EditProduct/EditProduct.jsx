@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import './EditProduct.css';
 import axios from 'axios';
 
@@ -15,8 +15,7 @@ const EditProduct = () => {
     async function fetchProductDetails() {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4001/productdetail/${productId}`);
-            //const response = await axios.get(`http://localhost:4001/productdetail/6`);
+            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`);
             setProduct(response.data);
             setError(null);
         } catch (err) {
@@ -29,7 +28,7 @@ const EditProduct = () => {
 
     async function fetchCategories() {
         try {
-            const response = await axios.get('http://localhost:4001/categories');
+            const response = await axios.get('http://localhost:4001/categories/categories');
             const newCategories = response.data;
             setCategories(newCategories);
         } catch (error) {
@@ -39,7 +38,7 @@ const EditProduct = () => {
 
     async function fetchTypes() {
         try {
-            const response = await axios.get('http://localhost:4001/types');
+            const response = await axios.get('http://localhost:4001/types/types');
             const newTypes = response.data;
             setTypes(newTypes);
         } catch (error) {
@@ -90,9 +89,10 @@ const EditProduct = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.put(`http://localhost:4001/editproduct/${productId}`, product);
+            const response = await axios.put(`http://localhost:4001/products/editproduct/${productId}`, product);
             setProduct(response.data.product);
             setError(null);
+            alert(`Product ${product.name} edited successfully!`);
         } catch (error) {
             setError('Failed to update product');
         } finally {
@@ -102,6 +102,7 @@ const EditProduct = () => {
 
     return (
         <form onSubmit={handleSubmit} className='edit-product'>
+            <Link to={`/listproduct`} className="editproduct-back">Back</Link>
             {isLoading && <p>Loading product...</p>}
             {error && <p>Error: {error}</p>}
 
