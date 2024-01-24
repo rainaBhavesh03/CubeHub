@@ -1,6 +1,31 @@
 const User = require('../models/user');
 const jwt = require("jsonwebtoken");
 
+const refreshAccessToken = (refreshToken) => {
+    // Verify and decode the refresh token
+    const decoded = jwt.verify(refreshToken, 'refresh-secret-key');
+
+    // Generate a new access token
+    const newAccessToken = jwt.sign({ userId: decoded.userId }, 'your-secret-key', { expiresIn: '1h' });
+
+    return newAccessToken;
+};
+
+const refreshToken = async (req, res) => {
+    try {
+        const refreshToken = req.body.refreshToken;
+
+        // Perform token refresh logic
+        const newAccessToken = refreshAccessToken(refreshToken);
+
+        // Send the new access token to the client
+        res.json({ accessToken: newAccessToken });
+    } catch (error) {
+        console.error('Token refresh failed:', error);
+        res.status(500).json({ error: 'Failed to refresh token' });
+    }
+};
+
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -18,22 +43,20 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        console.log(req);
         const { email, password } = req.body;
 
         // Find the user by email
         const user = await User.findOne({ email });
-        const role = user.role;
 
-        console.log(role);
-        const check = (await user.comparePassword(password));
-        console.log(check);
         // Check if the user exists and the password is correct
-        if (user && check) {
-            // Generate a JWT token
-            const token = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: '1h' });
+        if (user && (await user.comparePassword(password))) {
+            // Generate a JWT access token with a short expiration time
+            const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: '15m' });
 
-            res.status(200).json({ token, role });
+            // Generate a refresh token with a longer expiration time
+            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '7d' });
+
+            res.status(200).json({ accessToken, refreshToken, role: user.role });
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -43,5 +66,16 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const logout = (req, res) => {
+  try {
+    // You can perform additional tasks before or after logout if needed
+
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to logout' });
+  }
+};
+
+module.exports = { register, login, refreshToken, logout };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { refreshAccessToken } from '../AuthUtils/AuthUtils';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,20 +12,45 @@ const Login = () => {
         try {
             const response = await axios.post('http://localhost:4001/auth/login', { email, password });
 
-            const { role } = response.data;
+            const { accessToken, refreshToken, role } = response.data;
 
-            // Save the token in local storage or cookies
-            if(response.data.token){
-                document.cookie = `token=${response.data.token}; HttpOnly; Secure`;
-            }
+            // Store tokens and role in local storage
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('role', role);
 
-            if (role === 'admin') {
-                window.location.href = 'http://localhost:5173';
-            } else {
-                navigate('/'); // Redirect to landing page
-            }
+            // Redirect to the dashboard or home page
+            navigate('/'); 
         } catch (error) {
-            console.error('Error logging in:', error);
+            if (error.response && error.response.status === 401) {
+                // Token expired, attempt to refresh
+                try {
+                    const newAccessToken = await refreshAccessToken(localStorage.getItem('refreshToken'));
+
+                    // Retry the original login request with the new access token
+                    const response = await axios.post('http://localhost:4001/auth/login', { email, password }, {
+                        headers: {
+                            Authorization: `Bearer ${newAccessToken}`,
+                        },
+                    });
+
+                    const { accessToken, refreshToken, role } = response.data;
+
+                    // Store tokens and role in local storage
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('refreshToken', refreshToken);
+                    localStorage.setItem('role', role);
+
+                    // Redirect to the dashboard or home page
+                    navigate('/');
+                } catch (refreshError) {
+                    console.error('Token refresh failed:', refreshError);
+                    // Handle token refresh failure (e.g., show an error message)
+                }
+            } else {
+                console.error('Login failed:', error);
+                // Handle other login failure scenarios (e.g., show an error message)
+            }
         }
     };
 
