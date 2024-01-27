@@ -1,8 +1,11 @@
-import React from 'react';
+import React from "react";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import './Navbar.css';
+import navlogo from '../../../assets/logo.png'
+import navProfile from '../../../assets/nav-profile.svg'
+import { useNavigate, Link } from "react-router-dom";
 
-const Logout = () => {
+const Navbar = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -26,12 +29,13 @@ const Logout = () => {
     };
 
     return (
-        <div>
-        <h2>Logout</h2>
-        <button onClick={handleLogout}>Logout</button>
+        <div className='adminnavbar'>
+            <Link to={'/admin'}><img src={navlogo} alt='' className='adminnav-logo' /></Link>
+        {/*<img src={navProfile} alt='' className='nav-profile' />*/}
+
+            <button className='adminnav-btn' onClick={handleLogout}>Logout</button> 
         </div>
-    );
-};
+    )
+}
 
-export default Logout;
-
+export default Navbar

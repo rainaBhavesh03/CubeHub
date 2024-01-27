@@ -19,8 +19,11 @@ const Login = () => {
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('role', role);
 
-            // Redirect to the dashboard or home page
-            navigate('/'); 
+            if (role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/'); // Redirect to landing page
+            } 
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 // Token expired, attempt to refresh
@@ -41,8 +44,11 @@ const Login = () => {
                     localStorage.setItem('refreshToken', refreshToken);
                     localStorage.setItem('role', role);
 
-                    // Redirect to the dashboard or home page
-                    navigate('/');
+                    if (role === 'admin') {
+                        window.location.href = 'http://localhost:5173';
+                    } else {
+                        navigate('/'); // Redirect to landing page
+                    }
                 } catch (refreshError) {
                     console.error('Token refresh failed:', refreshError);
                     // Handle token refresh failure (e.g., show an error message)

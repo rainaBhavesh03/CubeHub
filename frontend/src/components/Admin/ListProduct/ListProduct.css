@@ -1,0 +1,99 @@
+.listproduct {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 30px 50px;
+    margin: 20px 30px;
+    border-radius: 6px;
+    background: white;
+}
+
+.listproduct-msg {
+    font-size: 14px;
+    color: #7b7b7b;
+}
+
+.listproduct-title {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+    gap: 10px;
+    width: 100%;
+    padding: 20px 0;
+    color: black;
+    font-size: 18px;
+    font-weight: 700;
+    margin-inline: 20px;
+    align-items: center;
+}
+
+.listproduct-format {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.8fr 1.2fr;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 0;
+    color: #454545;
+    font-size: 16px;
+    font-weight: 600;
+    margin-inline: 20px;
+    align-items: center;
+}
+
+.listproduct-format p {
+    margin: 0;
+}
+
+.listproduct-format img {
+    height: 80px;
+}
+
+.listproduct-image {
+    display: flex;
+    align-items: center;
+}
+
+.listproduct-info {
+    display: flex;
+    align-items: center;
+}
+
+.listproduct-copy-btn {
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+}
+
+.listproduct-copy-btn.copied{
+    color: #00aa00;
+}
+
+.listproduct-edit-btn {
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+    margin-inline-start: 10px;
+}
+
+.listproduct-edit-btn * {
+    text-decoration: none;
+    color: black;
+}
+
+.listproduct-remove-btn {
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+    margin-inline-end: 10px;
+}

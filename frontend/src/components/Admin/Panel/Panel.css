@@ -1,0 +1,10 @@
+.panel {
+    display: flex;
+}
+
+@media(max-width: 800px) {
+    .panel {
+        flex-direction: column;
+    }
+}
+
