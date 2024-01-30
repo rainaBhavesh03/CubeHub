@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { refreshAccessToken } from '../AuthUtils/AuthUtils';
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -14,49 +14,19 @@ const Login = () => {
 
             const { accessToken, refreshToken, role } = response.data;
 
-            // Store tokens and role in local storage
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
-            localStorage.setItem('role', role);
+            // Store tokens and role in cookies
+            Cookies.set('accessToken', accessToken);
+            Cookies.set('refreshToken', refreshToken);
+            Cookies.set('role', role);
 
             if (role === 'admin') {
                 navigate('/admin');
             } else {
-                navigate('/'); // Redirect to landing page
-            } 
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                // Token expired, attempt to refresh
-                try {
-                    const newAccessToken = await refreshAccessToken(localStorage.getItem('refreshToken'));
-
-                    // Retry the original login request with the new access token
-                    const response = await axios.post('http://localhost:4001/auth/login', { email, password }, {
-                        headers: {
-                            Authorization: `Bearer ${newAccessToken}`,
-                        },
-                    });
-
-                    const { accessToken, refreshToken, role } = response.data;
-
-                    // Store tokens and role in local storage
-                    localStorage.setItem('accessToken', accessToken);
-                    localStorage.setItem('refreshToken', refreshToken);
-                    localStorage.setItem('role', role);
-
-                    if (role === 'admin') {
-                        window.location.href = 'http://localhost:5173';
-                    } else {
-                        navigate('/'); // Redirect to landing page
-                    }
-                } catch (refreshError) {
-                    console.error('Token refresh failed:', refreshError);
-                    // Handle token refresh failure (e.g., show an error message)
-                }
-            } else {
-                console.error('Login failed:', error);
-                // Handle other login failure scenarios (e.g., show an error message)
+                navigate('/'); // Redirect to the landing page
             }
+        } catch (error) {
+            console.error('Login failed:', error);
+            // Handle other login failure scenarios (e.g., show an error message)
         }
     };
 

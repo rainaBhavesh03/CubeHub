@@ -80,14 +80,12 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const typeRoutes = require('./routes/typeRoutes');
-const protectedRoutes = require('./routes/protectedRoutes');
 
 // Use routes
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/types', typeRoutes);
-app.use('/protected', protectedRoutes);
 
 
 

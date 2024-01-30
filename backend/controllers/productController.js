@@ -42,47 +42,6 @@ module.exports = {
         }
     },
 
-    addProduct: async (req, res) => {
-        try {
-            const categories = JSON.parse(req.body.categories);
-            const types = JSON.parse(req.body.types);
-
-            let products = await Product.find({});
-            let id;
-            if(products.length>0){
-                let last_product_array = products.slice(-1);
-                let last_product = last_product_array[0];
-                id = last_product.id+1;
-            }
-            else{
-                id = 1;
-            }
-
-            const product = new Product({
-                id:id,
-                name:req.body.name,
-                type:types.map(typeId => new mongoose.Types.ObjectId(typeId)),
-                brand:req.body.brand,
-                description:req.body.description,
-                images:req.body.images,
-                category:categories.map(categoryId => new mongoose.Types.ObjectId(categoryId)),
-                new_price:req.body.new_price,
-                old_price:req.body.old_price,
-                stockQuantity:req.body.stockQuantity,
-            });
-            console.log(product);
-            await product.save();
-            console.log('saved');
-            res.json({
-                success:true,
-                name:req.body.name
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Failed to create product' });
-        }
-    },
-
     removeProduct: async (req, res) => {
         try {
             const deletedProduct = await Product.findOneAndDelete({ id: req.body.id });
@@ -205,6 +164,46 @@ module.exports = {
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    productSearch: async (req, res) => {
+        try {
+            const searchTerm = req.query.term;
+
+            const results = await Product.aggregate([
+                {
+                    $lookup: {
+                        from: "types",
+                        localField: "name",
+                        foreignField: "_id",
+                        as: "typeDetails"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "name",
+                        foreignField: "_id",
+                        as: "categoryDetails"
+                    }
+                },
+                {
+                    $match: {
+                        $or: [
+                            { name: { $regex: searchTerm, $options: 'i' } },
+                            { brand: { $regex: searchTerm, $options: 'i' } },
+                            { 'typeDetails.name': { $regex: searchTerm, $options: 'i' } },
+                            { 'categoryDetails.name': { $regex: searchTerm, $options: 'i' } },
+                        ],
+                    },
+                },
+            ]);
+
+            res.status(200).json(results);
+        } catch (error) {
+            console.error('Error searching products:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 

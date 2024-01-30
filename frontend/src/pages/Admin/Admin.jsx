@@ -1,13 +1,13 @@
+import Cookies from "js-cookie";
 import { React, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import Navbar from "../../components/Admin/Navbar/Navbar";
 import Panel from "../../components/Admin/Panel/Panel";
 
 const Admin = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const userRole = localStorage.getItem('role');
+        const userRole = Cookies.get('role');
         if (!userRole || userRole !== 'admin') {
             localStorage.setItem('redirectMessage', "User doesn't have admin privileges!");
             navigate('/');
@@ -16,7 +16,6 @@ const Admin = () => {
 
     return (
         <div>
-            <Navbar /> 
             <Panel />
         </div>
     )

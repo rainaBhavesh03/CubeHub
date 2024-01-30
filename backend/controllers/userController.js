@@ -1,12 +1,13 @@
 const User = require('../models/user');
 const jwt = require("jsonwebtoken");
+const expireTime = '1m';
 
 const refreshAccessToken = (refreshToken) => {
     // Verify and decode the refresh token
     const decoded = jwt.verify(refreshToken, 'refresh-secret-key');
 
     // Generate a new access token
-    const newAccessToken = jwt.sign({ userId: decoded.userId }, 'your-secret-key', { expiresIn: '1h' });
+    const newAccessToken = jwt.sign({ userId: decoded.userId }, 'your-secret-key', { expiresIn: expireTime });
 
     return newAccessToken;
 };
@@ -18,6 +19,7 @@ const refreshToken = async (req, res) => {
         // Perform token refresh logic
         const newAccessToken = refreshAccessToken(refreshToken);
 
+        console.log('access token updated!!');
         // Send the new access token to the client
         res.json({ accessToken: newAccessToken });
     } catch (error) {
@@ -51,10 +53,14 @@ const login = async (req, res) => {
         // Check if the user exists and the password is correct
         if (user && (await user.comparePassword(password))) {
             // Generate a JWT access token with a short expiration time
-            const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: '15m' });
+            const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: expireTime });
 
             // Generate a refresh token with a longer expiration time
-            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '7d' });
+            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '3m' });
+
+            // Store the refresh token in the database
+            user.refreshToken = refreshToken;
+            await user.save();
 
             res.status(200).json({ accessToken, refreshToken, role: user.role });
         } else {
