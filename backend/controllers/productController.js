@@ -1,10 +1,15 @@
+const { default: mongoose } = require('mongoose');
 const Product = require('../models/product');
 
 module.exports = {
     addProduct: async (req, res) => {
         try {
-            const categories = JSON.parse(req.body.categories);
-            const types = JSON.parse(req.body.types);
+            console.log('req: ', req);
+            console.log(req.body);
+
+            const categories = req.body.categories.map(categoryId => new mongoose.Types.ObjectId(categoryId));
+            const types = req.body.types.map(typeId => new mongoose.Types.ObjectId(typeId));
+
 
             let products = await Product.find({});
             let id;
@@ -20,11 +25,11 @@ module.exports = {
             const product = new Product({
                 id:id,
                 name:req.body.name,
-                type:types.map(typeId => new mongoose.Types.ObjectId(typeId)),
+                type:types,
                 brand:req.body.brand,
                 description:req.body.description,
                 images:req.body.images,
-                category:categories.map(categoryId => new mongoose.Types.ObjectId(categoryId)),
+                category:categories,
                 new_price:req.body.new_price,
                 old_price:req.body.old_price,
                 stockQuantity:req.body.stockQuantity,

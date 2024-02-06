@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import  './AddProduct.css';
+import Cookies from 'js-cookie';
 
 const AddProduct = () => {
     const [categories, setCategories] = useState([]);
@@ -82,21 +83,26 @@ const AddProduct = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
+        const data = {
+            name: title,
+            types: selectedTypes,
+            brand: brand,
+            description: description,
+            images: images, // images state holds an array of URLs
+            categories: selectedCategories,
+            new_price: newPrice,
+            old_price: oldPrice,
+            stockQuantity: quantity
+        };
 
-        formData.append('name', title);
-        formData.append('types', JSON.stringify(selectedTypes));
-        formData.append('brand', brand);
-        formData.append('description', description);
-        for (const image of images) {
-            formData.append('images', image);
-        }
-        formData.append('categories', JSON.stringify(selectedCategories));
-        formData.append('new_price', newPrice);
-        formData.append('old_price', oldPrice);
-        formData.append('stockQuantity', quantity);
         try {
-            const response = await axios.post('http://localhost:4001/products/addproduct', formData);
+            const response = await axios.post('http://localhost:4001/products/addproduct', data, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
+                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
+                }
+            });
+
             alert(`Product ${response.data.name} was added successfully!`);
 
             setTitle('');

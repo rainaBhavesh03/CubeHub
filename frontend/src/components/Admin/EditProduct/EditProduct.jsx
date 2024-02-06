@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './EditProduct.css';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const EditProduct = () => {
     const { productId } = useParams();
@@ -15,7 +16,12 @@ const EditProduct = () => {
     async function fetchProductDetails() {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`);
+            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
+                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
+                }
+            });
             setProduct(response.data);
             setError(null);
         } catch (err) {
@@ -89,7 +95,12 @@ const EditProduct = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.put(`http://localhost:4001/products/editproduct/${productId}`, product);
+            const response = await axios.put(`http://localhost:4001/products/editproduct/${productId}`, product, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
+                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
+                }
+            });
             setProduct(response.data.product);
             setError(null);
             alert(`Product ${product.name} edited successfully!`);

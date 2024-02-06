@@ -56,7 +56,7 @@ const login = async (req, res) => {
             const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: expireTime });
 
             // Generate a refresh token with a longer expiration time
-            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '3m' });
+            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '1d' });
 
             // Store the refresh token in the database
             user.refreshToken = refreshToken;
