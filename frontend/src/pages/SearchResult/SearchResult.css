@@ -1,0 +1,32 @@
+.searchresults {
+    background: #bbb;
+    padding-inline: 10%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.searchresults-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+.searchresults-header {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.searchresults-left {
+    flex: 1;
+    background: #ddd;
+    height: auto;
+    border: 2px solid red;
+}
+
+.searchresults-right {
+    flex: 4;
+    background: #fff;
+    border: 2px solid blue;
+}
+
+.searchresults-products {
+}

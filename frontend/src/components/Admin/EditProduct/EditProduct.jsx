@@ -16,12 +16,7 @@ const EditProduct = () => {
     async function fetchProductDetails() {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
-                }
-            });
+            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`);
             setProduct(response.data);
             setError(null);
         } catch (err) {

@@ -19,11 +19,15 @@ const Login = () => {
             Cookies.set('refreshToken', refreshToken);
             Cookies.set('role', role);
 
+            // Trigger update in Navbar component
+            window.dispatchEvent(new Event('userLoggedIn'));
+
             if (role === 'admin') {
                 navigate('/admin');
             } else {
                 navigate('/'); // Redirect to the landing page
             }
+
         } catch (error) {
             console.error('Login failed:', error);
             // Handle other login failure scenarios (e.g., show an error message)

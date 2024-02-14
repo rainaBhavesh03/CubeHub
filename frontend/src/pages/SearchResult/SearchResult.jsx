@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './SearchResult.css';
-import ProductDisplay from '../../components/ProductDisplay/ProductDisplay';
+import ProductsDisplay from '../../components/ProductsDisplay/ProductsDisplay';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -24,9 +24,21 @@ const SearchResult = () => {
     }, [searchTerm]);
 
     return (
-        <div>
-        <h2>Search Results for: {searchTerm}</h2>
-        <ProductDisplay products={searchResults} />
+        <div className="searchresults">
+            <div className="searchresults-wrapper">
+                <div className="searchresults-left">
+                    <p>/* here will be the filter logic */</p>
+                </div>
+                <div className="searchresults-right">
+                    <div className="searchresults-header">
+                        <p className="searchresults-header-text">Search Results for: {searchTerm}</p>
+                        <p>/* here will be the sorting logic */</p>
+                    </div>
+                    <div className="searchresults-products">
+                        <ProductsDisplay products={searchResults} />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

@@ -6,6 +6,7 @@ import Admin from './pages/Admin/Admin';
 import Register from './components/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import SearchResult from './pages/SearchResult/SearchResult';
+import ProductInfo from './components/ProductInfo/ProductInfo';
 
 const App = () => {
     return (
@@ -17,6 +18,7 @@ const App = () => {
                 <Route path="/" element={<Landing />} />
                 <Route path="/admin/*" element={<Admin />} />
                 <Route path="/search-results" element={<SearchResult />} />
+                <Route path="/product/*" element={<ProductInfo />} />
             </Routes>
         </>
     );

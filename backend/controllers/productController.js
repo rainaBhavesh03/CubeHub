@@ -4,9 +4,6 @@ const Product = require('../models/product');
 module.exports = {
     addProduct: async (req, res) => {
         try {
-            console.log('req: ', req);
-            console.log(req.body);
-
             const categories = req.body.categories.map(categoryId => new mongoose.Types.ObjectId(categoryId));
             const types = req.body.types.map(typeId => new mongoose.Types.ObjectId(typeId));
 
@@ -200,6 +197,7 @@ module.exports = {
                             { brand: { $regex: searchTerm, $options: 'i' } },
                             { 'typeDetails.name': { $regex: searchTerm, $options: 'i' } },
                             { 'categoryDetails.name': { $regex: searchTerm, $options: 'i' } },
+                            { description: { $regex: searchTerm, $options: 'i' } },
                         ],
                     },
                 },

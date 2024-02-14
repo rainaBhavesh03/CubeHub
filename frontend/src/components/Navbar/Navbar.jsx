@@ -14,10 +14,19 @@ const Navbar = () => {
         const role = Cookies.get('role');
         setUserRole(role);
     };
+    const handleUserLogin = () => {
+        updateRole();
+    };
 
     useEffect(() => {
         updateRole();
-    }, [userRole]);
+
+        window.addEventListener('userLoggedIn', handleUserLogin);
+
+        return () => {
+            window.removeEventListener('userLoggedIn', handleUserLogin);
+        };
+    }, []);
 
     const handleSearch = async () => {
         try {
@@ -45,6 +54,7 @@ const Navbar = () => {
             Cookies.remove('role');
 
             console.log('Logged out successfully');
+            setUserRole(null);
             navigate('/');
         } catch (error) {
             console.error('Logout failed:', error);
