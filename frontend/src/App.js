@@ -6,7 +6,7 @@ import Admin from './pages/Admin/Admin';
 import Register from './components/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import SearchResult from './pages/SearchResult/SearchResult';
-import ProductInfo from './components/ProductInfo/ProductInfo';
+import ProductInfo from './pages/ProductInfo/ProductInfo';
 
 const App = () => {
     return (

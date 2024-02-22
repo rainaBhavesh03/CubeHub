@@ -3,9 +3,31 @@
    justify-content: center;
 }
 
-.productinfo-wrapper {
+.productinfo-section {
     display: flex;
     width: 90%;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.productinfo-breadcrumb {
+    display: flex;
+    font-size: 16px;
+}
+
+.productinfo-breadcrumb p {
+    display: flex;
+    align-items: center;
+}
+
+.productinfo-breadcrumb-svg {
+    height: 20px;
+    margin-inline: -10px;
+}
+
+.productinfo-wrapper {
+    display: flex;
+    width: 100%;
     background: #eee;
 }
 
@@ -63,7 +85,7 @@
 .productinfo-right {
     display: flex;
     justify-content: center;
-    flex: 2 0;
+    flex: 1.75 0;
 }
 
 .productinfo-title {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import  './AddProduct.css';
 import Cookies from 'js-cookie';
+import MDEditor from '@uiw/react-md-editor';
 
 const AddProduct = () => {
     const [categories, setCategories] = useState([]);
@@ -13,9 +14,8 @@ const AddProduct = () => {
     const [oldPrice, setOldPrice] = useState('');
     const [newPrice, setNewPrice] = useState('');
     const [brand, setBrand] = useState('');
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState('**this is a test**');
     const [quantity, setQuantity] = useState('');
-    const formRef = useRef(null);
 
     async function fetchCategories() {
         try {
@@ -120,7 +120,7 @@ const AddProduct = () => {
     };
 
     return (
-        <form ref={formRef} onSubmit={handleSubmit} className='add-product'>
+        <form onSubmit={handleSubmit} className='add-product'>
             <div className='addproduct-itemfield'>
                 <p>Product title</p>
                 <input className="addproduct-input" type='text' name='name' placeholder='Enter product title here' value={title} onChange={(e) => setTitle(e.target.value)}/>
@@ -180,7 +180,13 @@ const AddProduct = () => {
             </div>
             <div className='addproduct-itemfield'>
                 <p>Product Description</p>
-                <input className="addproduct-input" type='text' name='description' placeholder='Enter product description' value={description} onChange={(e) => setDescription(e.target.value)}/>
+                <div className="addproduct-description"  data-color-mode="light">
+                    <MDEditor
+                        value={description}
+                        onChange={setDescription}
+                        
+                      />
+                </div>
             </div>
             <div className="addproduct-itemfield">
                 <p>Product Images</p>

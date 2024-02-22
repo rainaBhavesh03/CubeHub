@@ -5,6 +5,21 @@
     margin-right: auto;
 }
 
+.searchresults-breadcrumb {
+    display: flex;
+    font-size: 16px;
+}
+
+.searchresults-breadcrumb p {
+    display: flex;
+    align-items: center;
+}
+
+.searchresults-breadcrumb-svg {
+    height: 20px;
+    margin-inline: -10px;
+}
+
 .searchresults-wrapper {
     display: flex;
     align-items: flex-start;
@@ -12,20 +27,17 @@
 
 .searchresults-header {
     padding: 10px;
-    border: 1px solid black;
 }
 
 .searchresults-left {
     flex: 1;
     background: #ddd;
-    height: auto;
-    border: 2px solid red;
+    padding-inline: 10px;
 }
 
 .searchresults-right {
     flex: 4;
     background: #fff;
-    border: 2px solid blue;
 }
 
 .searchresults-products {

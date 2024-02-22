@@ -41,6 +41,10 @@
     gap: 40px;
 }
 
+.addproduct-description {
+    width: 50vw;
+}
+
 .add-product-selector {
     padding: 10px;
     min-width: 150px;

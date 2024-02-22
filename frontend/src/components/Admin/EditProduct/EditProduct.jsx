@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import './EditProduct.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import MDEditor from '@uiw/react-md-editor';
 
 const EditProduct = () => {
     const { productId } = useParams();
@@ -53,8 +54,8 @@ const EditProduct = () => {
         fetchTypes();
     }, [productId]);
 
-    const handleChange = (event) => {
-        setProduct({ ...product, [event.target.name]: event.target.value });
+    const handleChange = (propertyName, value) => {
+        setProduct({ ...product, [propertyName]: value });
     };
 
     const handleCategoryChange = (categoryId) => {
@@ -117,21 +118,21 @@ const EditProduct = () => {
                 <input
                     className="editproduct-input"
                     type='text'
-                    name='name'
                     placeholder='Enter product title here'
                     value={product.name}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange('name', event.target.value)}
                 />
             </div>
 
             <div className='editproduct-price'>
                 <div className='editproduct-itemfield'>
                     <p>Old Price</p>
-                    <input className="editproduct-input" type='text' name='old_price' placeholder='Enter old price here' value={product.old_price} onChange={handleChange}/>
+                    <input className="editproduct-input" type='text' placeholder='Enter old price here' value={product.old_price} onChange={(event) => handleChange('old_price', event.target.value)} />
                 </div>
                 <div className='editproduct-itemfield'>
                     <p>New Price</p>
-                    <input className="editproduct-input" type='text' name='new_price' placeholder='Enter new price here' value={product.new_price} onChange={handleChange}/>
+                    <input className="editproduct-input" type='text' placeholder='Enter new price here' value={product.new_price} onChange={(event) => handleChange('new_price', event.target.value)} />
+
                 </div>
             </div>
 
@@ -178,23 +179,21 @@ const EditProduct = () => {
                 <input
                     className="editproduct-input"
                     type='text'
-                    name='brand'
                     placeholder='Enter product brand'
                     value={product.brand}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange('brand', event.target.value)}
                 />
             </div>
 
             <div className='editproduct-itemfield'>
                 <p>Product Description</p>
-                <input
-                    className="editproduct-input"
-                    type='text'
-                    name='description'
-                    placeholder='Enter product description'
-                    value={product.description}
-                    onChange={handleChange}
-                />
+                <div className="editproduct-description"  data-color-mode="light">
+                    <MDEditor
+                        value={product.description}
+                        onChange={(event) => handleChange('description', event)}
+                      />
+                </div>
+
             </div>
 
             <div className="editproduct-itemfield">
@@ -228,10 +227,9 @@ const EditProduct = () => {
                 <input
                     className="editproduct-input"
                     type='number'
-                    name='stockQuantity'
                     placeholder='Enter product stock quantity'
                     value={product.stockQuantity}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange('stockQuantity', event.target.value)}
                 />
             </div>
 
