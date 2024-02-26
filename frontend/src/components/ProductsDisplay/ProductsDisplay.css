@@ -3,18 +3,31 @@
     position: relative;
     flex-wrap: wrap;
     background: #ddd;
-    padding-block: 1px;
+    padding: 5px;
 }
 
 .productsdisplay-item {
-    max-width: 27%;
     padding: 20px;
-    min-width: 20%;
     display: flex;
     flex-direction: column;
     background: #fff;
     flex: 1 0;
     margin: 1px;
+}
+.productsdisplay-link {
+    text-decoration: none;
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+}
+.productsdisplay-item-fromSearch {
+    max-width: 27%;
+    min-width: 20%;
+}
+.productsdisplay-item-notFromSearch {
+    max-width: 16%;
+    min-width: 10%;
 }
 
 .productsdisplay-item-container {

@@ -49,7 +49,7 @@ const SearchResult = () => {
                         <p>/* here will be the sorting logic */</p>
                     </div>
                     <div className="searchresults-products">
-                        <ProductsDisplay products={searchResults} />
+                        <ProductsDisplay products={searchResults} fromSearch={true}/>
                     </div>
                 </div>
             </div>

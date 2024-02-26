@@ -4,7 +4,9 @@ import ReactMarkdown from "react-markdown";
 import useReactRouterBreadcrumbs from "use-react-router-breadcrumbs";
 import './ProductInfo.css';
 import remarkGfm from 'remark-gfm';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import ProductsDisplay from "../../components/ProductsDisplay/ProductsDisplay";
+
 
 const ProductInfo = () => {
     const navigate = useNavigate();
@@ -13,16 +15,66 @@ const ProductInfo = () => {
     const [mainImage, setMainImage] = useState(null);
     const [visibleImages, setVisibleImages] = useState([]);
     const [startIndex, setStartIndex] = useState(0);
-    const [searchResults, setSearchResults] = useState([]);
+    const [brandSearchResults, setBrandSearchResults] = useState([]);
     const visibleImageCnt = 3;
     const breadcrumbs = useReactRouterBreadcrumbs();
-    const { searchList, currProduct } = location.state;
+    const { productId } = useParams();
+    let { currProduct } = (location.state === null) ? { currProduct: null } : location.state;
+    const [showModal, setShowModal] = useState(false);
 
-    // Fetch search results based on the searchTerm
-    async function fetchSearchResults() {
+
+    const ProductInfo_Modal = () => {
+        return (
+            <div className="productinfo-modal" onClick={() => handleZoomIn()}>
+                <div className="productinfo-modal-content" onClick={(event) => event.stopPropagation()}>
+                    <div className="productinfo-modal-main">
+                        <img className="productinfo-modal-image" src={mainImage} alt="main image modal" />
+                    </div>
+                    <div className="productinfo-modal-close">
+                        <p onClick={() => handleZoomIn()}>X</p>
+                    </div>
+                </div>
+            </div>
+        )
+    };
+    const handleZoomIn = () => {
+        setShowModal(!showModal);
+    }
+    async function fetchProductDetails() {
+        try {
+            const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`);
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+    useEffect(() => {
+        if (currProduct === null) {
+            try {
+                currProduct = fetchProductDetails();
+
+                currProduct.then((data) => {
+                    currProduct = data;
+
+                    setProduct(currProduct);
+                }).catch((err) => {
+                    console.error(err, "Couldn't resolve the promise");
+                });
+            } catch (err) {
+                console.error(err, "Couldn't fetch the product details");
+            }
+        }
+
+        setProduct(currProduct);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currProduct]);
+
+    async function fetchBrandSearchResults() {
         try {
             const response = await axios.get(`http://localhost:4001/products/search?term=${product.brand}`);
-            setSearchResults(response.data);
+            setBrandSearchResults(response.data);
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
@@ -33,11 +85,10 @@ const ProductInfo = () => {
     }
 
     useEffect(() => {
-        setProduct(currProduct);
-    }, [currProduct]);
-    useEffect(() => {
-        fetchSearchResults();
-    });
+        if(product.brand){
+            fetchBrandSearchResults();
+        }
+    }, [product]);
     useEffect(() => {
         if(product.images && product.images.length > 0)
             setMainImage(product.images[0]);
@@ -51,6 +102,7 @@ const ProductInfo = () => {
 
     return (
         <div className="productinfo">
+            {showModal && (<ProductInfo_Modal />)}
             <div className="productinfo-wrapper">
                 <div className="productinfo-section">
                     <div className="productinfo-breadcrumb">
@@ -71,7 +123,7 @@ const ProductInfo = () => {
                         <div className="productinfo-left">
                             <div className="productinfo-carousel">
                                 <div className="productinfo-carousel-main">
-                                    <img className="productinfo-carousel-main-image" src={mainImage} alt="product" />
+                                    <img className="productinfo-carousel-main-image" src={mainImage} onClick={() => handleZoomIn(mainImage)} alt="product" />
                                 </div>
                                 <hr className="productinfo-carousel-separator" />
                                 <div className="productinfo-carousel-preview">
@@ -128,12 +180,9 @@ const ProductInfo = () => {
                 </div>
 
 
-                <div className="productinfo-additional">
-                    <div className="productinfo-see-more">
-                    </div>
-
-                    <div className="productinfo-search">
-                    </div>
+                <div className="productinfo-more">
+                    <p className="productinfo-more-title">Products from the same brand :</p>
+                    <ProductsDisplay products={brandSearchResults} fromSearch={false} />
                 </div>
             </div>
         </div>
