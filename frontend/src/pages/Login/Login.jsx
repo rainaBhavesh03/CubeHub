@@ -52,6 +52,9 @@ const Login = () => {
                         <p className="login-show-label">Show password?</p>
                     </div>
                     <div className="login-submit">
+                        <Link className="login-register" to={`/forgot-password`}>Forgot password?</Link>
+                    </div>
+                    <div className="login-submit">
                         <Link className="login-register" to={`/register`}>Not registered?</Link>
                         <button className="login-btn" onClick={handleLogin}>Sign in</button>
                     </div>

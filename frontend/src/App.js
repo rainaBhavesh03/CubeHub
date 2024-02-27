@@ -7,6 +7,8 @@ import Register from './pages/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import SearchResult from './pages/SearchResult/SearchResult';
 import ProductInfo from './pages/ProductInfo/ProductInfo';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 
 const App = () => {
     return (
@@ -15,6 +17,8 @@ const App = () => {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
                 <Route path="/" element={<Landing />} />
                 <Route path="/admin/*" element={<Admin />} />
                 <Route path="/search-results" element={<SearchResult />} />

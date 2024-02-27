@@ -9,6 +9,7 @@ const otpSchema = new mongoose.Schema({
 
 async function sendVerificationMail (email, otp) {
     try {
+        console.log('before sending mail ', email, otp);
         const mailResponse = await mailSender(email, "Verification Email from CubeHub", otp);
         console.log("Email sent!");
     }

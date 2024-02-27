@@ -1,7 +1,10 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 const OTP = require('../models/otp');
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
 const otpGenerator = require('otp-generator');
+const mailSender = require('../utils/sendMail.js');
 const expireTime = '1m';
 
 const refreshAccessToken = (refreshToken) => {
@@ -149,6 +152,89 @@ const login = async (req, res) => {
     }
 };
 
+const resetPasswordToken = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findOne({email: email});
+        if(!user) {
+            return res.json({success:false,
+            message:'Your Email is not registered with us'});
+        }
+
+        const token  = crypto.randomUUID();
+        const updatedDetails = await User.findOneAndUpdate(
+                                        {email:email},
+                                        {
+                                            passToken:token,
+                                            passExpiry: Date.now() + 5*60*1000,
+                                        },
+                                        {new:true});
+
+        console.log(updatedDetails);
+        const url = `http://localhost:3000/reset-password/${token}`
+        await mailSender(email, 
+                        "Find your password reset link for your CubeHub account below :",
+                        `Password Reset Link: ${url}`);
+
+        return res.json({
+            success:true,
+            message:'Email sent successfully, please check email and change pwd',
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:'Something went wrong while sending reset pwd mail'
+        })
+    }  
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const {password, confirmPassword, token} = req.body;
+        if(password !== confirmPassword) {
+            return res.json({
+                success:false,
+                message:'Password not matching',
+            });
+        }
+
+        const userDetails = await User.findOne({passToken: token});
+        if(!userDetails) {
+            return res.json({
+                success:false,
+                message:'Token is invalid',
+            });
+        }
+        if( userDetails.resetPasswordExpires < Date.now()  ) {
+                return res.json({
+                    success:false,
+                    message:'Token is expired, please regenerate your token',
+                });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.findOneAndUpdate(
+            {passToken:token},
+            {password:hashedPassword},
+            {new:true},
+        );
+
+        return res.status(200).json({
+            success:true,
+            message:'Password reset successful',
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:'Something went wrong while sending reset pwd mail'
+        })
+    }
+}
+
 const logout = (req, res) => {
   try {
     // You can perform additional tasks before or after logout if needed
@@ -160,5 +246,5 @@ const logout = (req, res) => {
   }
 };
 
-module.exports = { sendOtp, register, login, refreshToken, logout };
+module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword };
 
