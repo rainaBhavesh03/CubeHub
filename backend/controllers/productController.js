@@ -7,20 +7,9 @@ module.exports = {
             const categories = req.body.categories.map(categoryId => new mongoose.Types.ObjectId(categoryId));
             const types = req.body.types.map(typeId => new mongoose.Types.ObjectId(typeId));
 
-
-            let products = await Product.find({});
-            let id;
-            if(products.length>0){
-                let last_product_array = products.slice(-1);
-                let last_product = last_product_array[0];
-                id = last_product.id+1;
-            }
-            else{
-                id = 1;
-            }
-
+            if(req.body.stockQuantity < 0)
+                req.body.stockQuantity = 0;
             const product = new Product({
-                id:id,
                 name:req.body.name,
                 type:types,
                 brand:req.body.brand,
@@ -46,7 +35,7 @@ module.exports = {
 
     removeProduct: async (req, res) => {
         try {
-            const deletedProduct = await Product.findOneAndDelete({ id: req.body.id });
+            const deletedProduct = await Product.findOneAndDelete({ _id: req.body.id });
 
             if (!deletedProduct) {
                 return res.status(404).json({
@@ -70,8 +59,10 @@ module.exports = {
         try {
             const productId = req.params.id;
 
+            if(req.body.stockQuantity < 0)
+                req.body.stockQuantity = 0;
             const updatedProduct = await Product.findOneAndUpdate(
-                { id: productId },
+                { _id: productId },
                 req.body,
                 { new: true } // Return the updated product
             );
@@ -145,24 +136,13 @@ module.exports = {
         try {
             const productId = req.params.productId;
 
-            const productDetail = await Product.aggregate([
-                {
-                    $match: {
-                        id: parseInt(productId)
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0, 
-                    }
-                }
-            ]);
+            const productDetail = await Product.findById(productId);
 
             if (productDetail.length === 0) {
                 return res.status(404).json({ error: 'Product not found' });
             }
 
-            res.json(productDetail[0]); 
+            res.json(productDetail); 
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });

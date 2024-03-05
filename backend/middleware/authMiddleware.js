@@ -3,26 +3,29 @@ const axios = require('axios');
 const User = require('../models/user');
 
 const authenticate = async (req, res, next) => {
-    const accessToken = req.headers.authorization.split(' ')[1];
+    const accessToken = req.headers.authorization?.split(' ')[1];
 
     if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    jwt.verify(accessToken, 'your-secret-key', async (err, decoded) => {
-        if (err) {
-            // Access token is invalid or expired
-            const refreshToken = req.headers.refresh.split(' ')[1];
+    try {
+        const decoded = jwt.verify(accessToken, 'your-secret-key');
+        req.user = decoded;
+
+        // Option 1: Accessing user ID from decoded payload (if included)
+        if (decoded.userId) {
+            req.userId = decoded.userId;
+        }
+
+        next();
+    } catch (error) {
+        // Check for expired token and attempt refresh
+        if (error.name === 'TokenExpiredError') {
+            const refreshToken = req.headers.refresh?.split(' ')[1];
 
             if (!refreshToken) {
-                return res.status(403).json({ error: 'Invalid token' });
-            }
-
-            // Find the user by refresh token
-            const user = await User.findOne({ refreshToken });
-
-            if (!user) {
-                return res.status(403).json({ error: 'Invalid refresh token' });
+                return res.status(403).json({ error: 'Invalid or expired token' });
             }
 
             try {
@@ -32,16 +35,23 @@ const authenticate = async (req, res, next) => {
                 // Set the new access token in the request headers
                 req.headers.authorization = `Bearer ${response.data.accessToken}`;
 
-                return next();
-            } catch (error) {
-                console.error('Failed to refresh access token:', error);
-                return res.status(500).json({ error: 'Failed to refresh access token' });
-            }
-        }
+                // Option 1 (continued): Store user ID from new decoded token
+                const newDecoded = jwt.verify(response.data.accessToken, 'your-secret-key');
+                if (newDecoded.userId) {
+                    req.userId = newDecoded.userId;
+                }
 
-        req.user = decoded;
-        next();
-    });
+                next();
+            } catch (refreshError) {
+                console.error('Failed to refresh access token:', refreshError);
+                return res.status(403).json({ error: 'Invalid refresh token or failed refresh' });
+            }
+        } else {
+            console.error('Failed to verify access token:', error);
+            return res.status(403).json({ error: 'Invalid or expired token' });
+        }
+    }
 };
+
 
 module.exports = { authenticate };

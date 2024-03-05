@@ -3,15 +3,10 @@ const mongoose = require("mongoose");
 // Schema for Creating products
 
 const Product = new mongoose.Schema({
-    id:{
-        type: Number,
-        required: true,
-    },
     name:{
         type: String,
         required: true,
     },
-
     type: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Type",

@@ -5,11 +5,12 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const otpGenerator = require('otp-generator');
 const mailSender = require('../utils/sendMail.js');
-const expireTime = '1m';
+const expireTime = '1d';
 
 const refreshAccessToken = (refreshToken) => {
     // Verify and decode the refresh token
     const decoded = jwt.verify(refreshToken, 'refresh-secret-key');
+    console.log(decoded);
 
     // Generate a new access token
     const newAccessToken = jwt.sign({ userId: decoded.userId }, 'your-secret-key', { expiresIn: expireTime });
@@ -136,7 +137,7 @@ const login = async (req, res) => {
             const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: expireTime });
 
             // Generate a refresh token with a longer expiration time
-            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '1d' });
+            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '5d' });
 
             // Store the refresh token in the database
             user.refreshToken = refreshToken;

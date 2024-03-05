@@ -82,6 +82,10 @@ const Navbar = () => {
                 <button onClick={handleSearch}>Search</button>
             </div>
 
+            <button>
+                <Link to={"/cart"}>Cart</Link>
+            </button>
+
             {isLoggedIn() ? (
                 <button className='nav-btn' onClick={handleLogout}>
                 Logout

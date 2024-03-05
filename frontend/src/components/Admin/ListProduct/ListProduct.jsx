@@ -113,7 +113,7 @@ const ListProduct = () => {
         {isLoading && <p className='listproduct-msg'>Loading products...</p>}
         {error && <p className='listproduct-msg'>Error: {error}</p>}
         {products.map((product) => (
-            <div key={product.id} className='listproduct-info'>
+            <div key={product._id} className='listproduct-info'>
             <div className='listproduct-format'>
             <p>Name:<br/>{product.name}</p>
             <p className='listproduct-image'>
@@ -130,9 +130,9 @@ const ListProduct = () => {
             <p>Categories:<br/>{product.category.join(', ')}</p>
             </div>
 
-            <button id={`remove-btn-${product.id}`} className={`listproduct-remove-btn`} onClick={() => handleRemoveProduct(product.id, product.name)}>Remove</button>
-            <button id={`edit-btn-${product.id}`} className={`listproduct-edit-btn`} >
-            <Link to={`/admin/editproduct/${encodeURIComponent(product.id)}`}>Edit</Link>
+            <button id={`remove-btn-${product._id}`} className={`listproduct-remove-btn`} onClick={() => handleRemoveProduct(product._id, product.name)}>Remove</button>
+            <button id={`edit-btn-${product._id}`} className={`listproduct-edit-btn`} >
+            <Link to={`/admin/editproduct/${encodeURIComponent(product._id)}`}>Edit</Link>
             </button>
             </div>
         ))}
