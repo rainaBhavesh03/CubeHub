@@ -1,12 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import useReactRouterBreadcrumbs from "use-react-router-breadcrumbs";
 import './ProductInfo.css';
 import remarkGfm from 'remark-gfm';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProductsDisplay from "../../components/ProductsDisplay/ProductsDisplay";
-
+import { CartContext } from "../../context/CartContext";
 
 const ProductInfo = () => {
     const navigate = useNavigate();
@@ -21,6 +21,13 @@ const ProductInfo = () => {
     const { productId } = useParams();
     let { currProduct } = (location.state === null) ? { currProduct: null } : location.state;
     const [showModal, setShowModal] = useState(false);
+    const [quantity, setQuantity] = useState(1);
+
+    const { addItemToCart } = useContext(CartContext);
+
+    const handleAddToCart = async (productId, quantity) => {
+        addItemToCart(productId, quantity).then(() => {fetchProductDetails().then((data) => setProduct(data)) });
+    };
 
 
     const ProductInfo_Modal = () => {
@@ -172,7 +179,11 @@ const ProductInfo = () => {
                                 )}
                             </div>
                             <hr className="productinfo-separator" />
-                            <p>Add to cart and Checkout</p>
+                            <div className="productinfo-quantity">
+                                <label className="productinfo-quantity-label">Quantity: </label>
+                                <input disabled={product.stockQuantity === 0} className="productinfo-quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                            </div>
+                            <button disabled={product.stockQuantity === 0} className="productinfo-addtocart" onClick={() => handleAddToCart(product._id, quantity)}>Add to Cart</button>
                             <hr className="productinfo-separator" />
                             <ReactMarkdown className="productinfo-description" remarkPlugins={remarkGfm}>{product.description}</ReactMarkdown>
                         </div>

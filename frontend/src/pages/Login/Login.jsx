@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Login.css';
+import { CartContext } from '../../context/CartContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const { fetchInitialCartLength } = useContext(CartContext);
 
     const handleLogin = async () => {
         try {
@@ -23,6 +25,7 @@ const Login = () => {
 
             // Trigger update in Navbar component
             window.dispatchEvent(new Event('userLoggedIn'));
+            fetchInitialCartLength();
 
             if (role === 'admin') {
                 navigate('/admin');

@@ -29,7 +29,7 @@ const mergeCart = async (req, res) => {
         userCart.items = [...userCart.items, ...updatedItems];
         await userCart.save();
 
-        res.json({ message: "Carts merged successfully", cart: userCart });
+        res.json({ message: "Carts merged successfully", cartLen: userCart.items.length });
     }
     catch (error) {
         console.error(error);
@@ -39,8 +39,8 @@ const mergeCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
     try {
-        const { productIdToAdd } = req.body;
-        let productToAdd = await Product.findById(productIdToAdd);
+        const { productId, quantity } = req.body;
+        let productToAdd = await Product.findById(productId);
         if (!productToAdd) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -53,23 +53,23 @@ const addToCart = async (req, res) => {
             userCart = new Cart({ userId: new mongoose.Types.ObjectId(req.userId), items: [] });
         }
 
-        const existingItem = userCart.items.find(item => item.productId.equals(productIdToAdd));
+        const existingItem = userCart.items.find(item => item.productId.equals(productId));
         if (existingItem) {
-            existingItem.quantity++;
+            existingItem.quantity += quantity;
         } else {
             userCart.items.push({
                 productId: productToAdd._id,
-                quantity: 1,
+                quantity: quantity,
                 price: productToAdd.new_price,
             });
         }
 
-        productToAdd.stockQuantity--;
+        productToAdd.stockQuantity -= quantity;
         await productToAdd.save();
         userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         await userCart.save();
 
-        res.json({ message: "Item added to cart successfully", cart: userCart });
+        res.json({ message: "Item added to cart successfully", cartLen: userCart.items.length });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error adding item to cart" });
@@ -78,8 +78,8 @@ const addToCart = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
     try {
-        const { productIdToRemove } = req.body;
-        let productToRemove = await Product.findById(productIdToRemove);
+        const { productId } = req.body;
+        let productToRemove = await Product.findById(productId);
         if (!productToRemove) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -90,7 +90,7 @@ const removeFromCart = async (req, res) => {
         }
 
 
-        const existingItem = userCart.items.find((item) => item.productId.equals(productIdToRemove));
+        const existingItem = userCart.items.find((item) => item.productId.equals(productId));
         if (existingItem) {
             existingItem.quantity--;
 
@@ -103,7 +103,7 @@ const removeFromCart = async (req, res) => {
         await productToRemove.save();
         userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         await userCart.save();
-        res.json({ message: "Item removed from cart successfully", cart: userCart });
+        res.json({ message: "Item removed from cart successfully", cartLen: userCart.items.length });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error removing item from cart" });
@@ -112,8 +112,8 @@ const removeFromCart = async (req, res) => {
 
 const deleteFromCart = async (req, res) => {
     try {
-        const { productIdToDelete } = req.body;
-        let productToDelete = await Product.findById(productIdToDelete);
+        const { productId } = req.body;
+        let productToDelete = await Product.findById(productId);
         if (!productToDelete) {
             return res.status(404).json({ message: "Product not found" });
         }
@@ -123,7 +123,7 @@ const deleteFromCart = async (req, res) => {
             return res.json({ message: "No cart found" });
         }
 
-        const existingItemIndex = userCart.items.findIndex(item => item.productId.equals(productIdToDelete));
+        const existingItemIndex = userCart.items.findIndex(item => item.productId.equals(productId));
         if (existingItemIndex !== -1) {
             productToDelete.stockQuantity += userCart.items[existingItemIndex].quantity;
             userCart.items.splice(existingItemIndex, 1);
@@ -133,7 +133,7 @@ const deleteFromCart = async (req, res) => {
         userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         await userCart.save();
 
-        res.json({ message: "Item deleted from cart successfully", cart: userCart });
+        res.json({ message: "Item deleted from cart successfully", cartLen: userCart.items.length });
     }
     catch (error) {
         console.error(error);
@@ -141,4 +141,32 @@ const deleteFromCart = async (req, res) => {
     }
 }
 
-module.exports = { mergeCart, addToCart, removeFromCart, deleteFromCart };
+const fetchInitialCartLength = async (req, res) => {
+    try {
+        let userCart = await Cart.findOne({ userId: req.userId });
+        if(!userCart)
+            return res.json({ message: "No cart found" });
+
+        res.json({ cartLen: userCart.items.length });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error getting the cart length" });
+    }
+}
+
+const getCartItems = async (req, res) => {
+    try {
+        let userCart = await Cart.findOne({ userId: req.userId });
+        if(!userCart)
+            return res.json({ message: "No cart found" });
+
+        res.json({ cartItems: userCart.items });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error getting the cart items" });
+    }
+}
+
+module.exports = { mergeCart, addToCart, removeFromCart, deleteFromCart, fetchInitialCartLength, getCartItems };

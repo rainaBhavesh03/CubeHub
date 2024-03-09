@@ -1,0 +1,27 @@
+.cart-wrapper {
+    display: flex;
+    justify-content: center;
+    background: #eee;
+}
+
+.cart-content {
+    width: 80%;
+    display: flex;
+    gap: 50px;
+    margin-block: 30px;
+}
+
+.cart-left {
+    width: 60%;
+    background: #ddd;
+    padding: 10px;
+    border: 2px solid #c8c8c8;
+    border-radius: 5px;
+}
+.cart-title {
+}
+
+.cart-right {
+    flex: 1;
+    background: white;
+}

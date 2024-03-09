@@ -11,12 +11,39 @@
     z-index: 5;
 }
 
-.nav-logo {
+.navbar-logo {
     width: 80px;
+    cursor: pointer;
 }
 
 .nav-profile {
     width: 75px
+}
+
+.navbar-cart {
+    object-fit: contain;
+    height: 35px;
+    cursor: pointer;
+}
+.navbar-cart-svg {
+    height: 100%;
+    width: 100%;
+}
+.navbar-cart-cnt {
+    background: red;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 28px;
+    height: 28px;
+    width: 28px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    right: -20px;
+    top: -30px;
+    position: relative;
 }
 
 @media(max-width: 800px){

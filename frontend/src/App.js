@@ -10,10 +10,11 @@ import ProductInfo from './pages/ProductInfo/ProductInfo';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Cart from './pages/Cart/Cart';
+import { CartProvider } from './context/CartContext';
 
 const App = () => {
     return (
-        <>
+        <CartProvider>
             <Navbar />
             <Routes>
                 <Route path="/login" element={<Login />} />
@@ -26,7 +27,7 @@ const App = () => {
                 <Route path="/search-results" element={<SearchResult />} />
                 <Route path="/product/:productId" element={<ProductInfo />} />
             </Routes>
-        </>
+        </ CartProvider>
     );
 };
 

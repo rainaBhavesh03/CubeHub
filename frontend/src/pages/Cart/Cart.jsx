@@ -1,74 +1,51 @@
-import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './Cart.css';
+import CartItemDisplay from '../../components/CartItemDisplay/CartItemDisplay';
 
 const Cart = () => {
-    const handleAddClick = async () => {
-        try {
-            const productIdToAdd = "65ca4672c6abfd61426f048d";
+    const [cartItems, setCartItems] = useState([]);
 
-            console.log("button clicked");
-            const response = await axios.post("http://localhost:4001/cart/addtocart", {productIdToAdd}, {
+
+
+    const getCartItems = async () => {
+        try {
+            const response = await axios.get("http://localhost:4001/cart/getcartitems", {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('accessToken')}`,
                     Refresh: `Bearer ${Cookies.get('refreshToken')}`
                 }
             });
-
-            console.log(response);
-            console.log("item added");
+            
+            setCartItems(response.data.cartItems);
         }
         catch (error) {
             console.error(error);
         }
     };
-    const handleRemoveClick = async () => {
-        try {
-            const productIdToRemove = "65ca4672c6abfd61426f048d";
-
-            console.log("button clicked");
-            const response = await axios.post("http://localhost:4001/cart/removefromcart", {productIdToRemove}, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
-                }
-            });
-
-            console.log(response);
-            console.log("item removed");
-        }
-        catch (error) {
-            console.error(error);
-        }
-    };
-    const handleDeleteClick = async () => {
-        try {
-            const productIdToDelete = "65ca4672c6abfd61426f048d";
-
-            console.log("button clicked");
-            const response = await axios.post("http://localhost:4001/cart/deletefromcart", {productIdToDelete}, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
-                }
-            });
-
-            console.log(response);
-            console.log("item deleted");
-        }
-        catch (error) {
-            console.error(error);
-        }
-    };
+    useEffect(() => {
+        getCartItems();
+    }, []);
 
     return (
         <div className="cart-wrapper">
             <div className="cart-content">
-                <button onClick={handleAddClick}>Add</button> 
-                <button onClick={handleRemoveClick}>Remove</button> 
-                <button onClick={handleDeleteClick}>Delete</button> 
+                <div className="cart-left">
+                    {cartItems.length > 0 ? (
+                        <div className="cart">
+                            <p className="cart-title">Your Cart :</p>
+                            {cartItems.map((item) => (
+                                <CartItemDisplay key={item._id} item={item} getCartItems={getCartItems}/>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No products in your cart! Continue to shop...</p>
+                    )}
+                </div>
+                <div className="cart-right">
+                </div>
             </div>
         </div>
     );
