@@ -1,6 +1,7 @@
 const { default: mongoose } = require('mongoose');
 const Cart = require('../models/cart');
 const Product = require('../models/product');
+const Decimal = require('decimal.js');
 
 const mergeCart = async (req, res) => {
     try {
@@ -55,18 +56,39 @@ const addToCart = async (req, res) => {
 
         const existingItem = userCart.items.find(item => item.productId.equals(productId));
         if (existingItem) {
-            existingItem.quantity += quantity;
+            if(quantity > productToAdd.stockQuantity){
+                existingItem.quantity += productToAdd.stockQuantity;
+                productToAdd.stockQuantity = 0;
+            }
+            else{
+                existingItem.quantity += quantity;
+                productToAdd.stockQuantity -= quantity;
+            }
         } else {
-            userCart.items.push({
-                productId: productToAdd._id,
-                quantity: quantity,
-                price: productToAdd.new_price,
-            });
+            if(quantity > productToAdd.stockQuantity){
+                userCart.items.push({
+                    productId: productToAdd._id,
+                    quantity: productToAdd.stockQuantity,
+                    price: productToAdd.new_price,
+                });
+                productToAdd.stockQuantity = 0;
+            }
+            else {
+                userCart.items.push({
+                    productId: productToAdd._id,
+                    quantity: quantity,
+                    price: productToAdd.new_price,
+                });
+                productToAdd.stockQuantity -= quantity;
+            }
         }
 
-        productToAdd.stockQuantity -= quantity;
         await productToAdd.save();
-        userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        userCart.grandTotal = userCart.items.reduce((acc, item) => {
+            const price = new Decimal(item.price);
+            const quantity = new Decimal(item.quantity);
+            return acc.plus(price.mul(quantity));
+        }, new Decimal(0));
         await userCart.save();
 
         res.json({ message: "Item added to cart successfully", cartLen: userCart.items.length });
@@ -101,7 +123,11 @@ const removeFromCart = async (req, res) => {
         }
 
         await productToRemove.save();
-        userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        userCart.grandTotal = userCart.items.reduce((acc, item) => {
+            const price = new Decimal(item.price);
+            const quantity = new Decimal(item.quantity);
+            return acc.plus(price.mul(quantity));
+        }, new Decimal(0));
         await userCart.save();
         res.json({ message: "Item removed from cart successfully", cartLen: userCart.items.length });
     } catch (error) {
@@ -130,7 +156,11 @@ const deleteFromCart = async (req, res) => {
         }
 
         await productToDelete.save();
-        userCart.grandTotal = userCart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        userCart.grandTotal = userCart.items.reduce((acc, item) => {
+            const price = new Decimal(item.price);
+            const quantity = new Decimal(item.quantity);
+            return acc.plus(price.mul(quantity));
+        }, new Decimal(0));
         await userCart.save();
 
         res.json({ message: "Item deleted from cart successfully", cartLen: userCart.items.length });

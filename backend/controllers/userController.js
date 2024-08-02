@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const otpGenerator = require('otp-generator');
 const mailSender = require('../utils/sendMail.js');
+const { default: mongoose } = require('mongoose');
 const expireTime = '1d';
 
 const refreshAccessToken = (refreshToken) => {
@@ -247,5 +248,21 @@ const logout = (req, res) => {
   }
 };
 
-module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword };
+const getUserDetails = async (req, res) => {
+  try {
+      const userId = new mongoose.Types.ObjectId(req.userId);
+      const user = await User.findOne( userId );
+
+      if(!user){
+          return res.status(500).json({ message: "User doesn't exist" });
+      }
+
+      res.status(200).json({ message: 'Got user details successfully', user: user });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to get user details' });
+  }
+};
+
+module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword, getUserDetails };
 

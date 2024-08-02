@@ -46,6 +46,7 @@ const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const typeRoutes = require('./routes/typeRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 // Use routes
 app.use('/auth', authRoutes);
@@ -53,6 +54,7 @@ app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/types', typeRoutes);
 app.use('/cart', cartRoutes);
+app.use('/review', reviewRoutes);
 
 // Root route
 app.get("/", (req, res) => {

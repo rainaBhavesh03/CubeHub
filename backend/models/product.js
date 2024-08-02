@@ -42,6 +42,14 @@ const Product = new mongoose.Schema({
         type: Number,
         default: true,
     },
+    averageRating: {
+        type: Number,
+        default: 0,
+    },
+    totalReviews: {
+        type: Number,
+        default: 0,
+    },
 })
 
 module.exports = mongoose.model("Product", Product);

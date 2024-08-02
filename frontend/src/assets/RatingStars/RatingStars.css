@@ -1,0 +1,11 @@
+.ratingstars-filled {
+    fill: yellow;
+    height: 16px;
+    width: 16px;
+    position: relative;
+}
+.ratingstars-star {
+    display: flex;
+    align-items: center;
+}
+

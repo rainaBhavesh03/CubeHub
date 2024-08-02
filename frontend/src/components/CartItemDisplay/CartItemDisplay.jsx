@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './CartItemDisplay.css';
 import { CartContext } from "../../context/CartContext";
+import Decimal from "decimal.js";
 
 const CartItemDisplay = ({ item, getCartItems }) => {
     const [product, setProduct] = useState({});
@@ -59,7 +60,7 @@ const CartItemDisplay = ({ item, getCartItems }) => {
                     </div>
                     <div className="cartitemdisplay-total">
                         <p>Total :</p>
-                        <p>{item.quantity * item.price}</p>
+                        <p>{new Decimal(item.quantity).mul(new Decimal(item.price)).toFixed(2)}</p>
                     </div>
                 </div>
             ) : (

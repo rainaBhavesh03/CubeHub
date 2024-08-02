@@ -21,6 +21,9 @@
     font-weight: 600;
     color: black;
 }
+.productsdisplay-link: hover {
+    cursor: pointer;
+}
 .productsdisplay-item-fromSearch {
     max-width: 27%;
     min-width: 20%;

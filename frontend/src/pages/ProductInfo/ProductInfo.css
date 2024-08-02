@@ -155,11 +155,83 @@
 
 
 
-.productinfo-rating {
-    padding: 20px;
+.productinfo-review-wrapper {
+    padding: 20px 0 20px 20px;
     border: 2px solid #d8d8d8;
     background: #fff;
     border-radius: 10px;
+}
+.productinfo-review-top {
+    margin: 0 20px 30px 20px;
+}
+.productinfo-review-rating {
+    margin: 0;
+    width: 20px;
+    text-align: center;
+}
+.productinfo-review-input {
+    width: 80%;
+    line-height: 18px;
+    padding: 7px;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+.productinfo-review-btn {
+    margin: 0 10px;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+.productinfo-review-btn:hover {
+    background: #ddd;
+    cursor: pointer;
+}
+.productinfo-review-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow: auto;
+    max-height: 500px;
+    scrollbar-width: thin;
+}
+.productinfo-review-comment {
+    margin: 5px 0;
+    font-size: 16px;
+    overflow-wrap: break-word;
+    width: 90%;
+}
+.productinfo-review {
+    display: flex;
+    flex-direction: column;
+}
+.productinfo-review span {
+    color: #888;
+    font-size: 12px;
+}
+.productinfo-review-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.productinfo-review-menu {
+    padding: 0;
+    margin: 0 10px;
+    border: none;
+    background: white;
+}
+.productinfo-review-menu svg {
+    height: 18px;
+    width: 18px;
+    padding: 5px;
+}
+.productinfo-review-menu svg:hover {
+    background: #eee;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.productinfo-review-details-header {
+    display: flex;
+    gap: 10px;
 }
 
 
@@ -173,6 +245,7 @@
     border: 2px solid #d8d8d8;
     border-radius: 10px;
     background: #fff;
+    height: 100%;
 }
 
 .productinfo-title {
@@ -242,12 +315,16 @@
 .productinfo-quantity {
     margin-block: 20px 30px;
     display: flex;
+    align-items: center;
 }
 .productinfo-quantity-label {
     margin-inline: 0 20px;
 }
 .productinfo-quantity-input {
-    width: 40px;
+    width: 35px;
+    height: 15px;
+    padding: 5px;
+    text-align: center;
 }
 
 .productinfo-addtocart {
