@@ -138,13 +138,13 @@ const login = async (req, res) => {
             const accessToken = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key', { expiresIn: expireTime });
 
             // Generate a refresh token with a longer expiration time
-            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '5d' });
+            const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh-secret-key', { expiresIn: '10d' });
 
             // Store the refresh token in the database
             user.refreshToken = refreshToken;
             await user.save();
 
-            res.status(200).json({ accessToken, refreshToken, role: user.role });
+            res.status(200).json({ accessToken, refreshToken, user: user });
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -264,5 +264,9 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword, getUserDetails };
+const verifyUser = (req, res) => {
+    res.status(200).json({ message: "User verified"});
+};
+
+module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword, getUserDetails, verifyUser };
 

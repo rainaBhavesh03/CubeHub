@@ -13,6 +13,7 @@ router.post('/reset-password', userController.resetPassword);
 router.post('/logout', userController.logout);
 
 router.get('/getuserdetails', authenticate, userController.getUserDetails);
+router.get('/verifyuser', authenticate, userController.verifyUser);
 
 module.exports = router;
 

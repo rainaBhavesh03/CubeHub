@@ -8,6 +8,6 @@ router.post('/addtocart', authenticate, cartController.addToCart);
 router.post('/removefromcart', authenticate, cartController.removeFromCart);
 router.post('/deletefromcart', authenticate, cartController.deleteFromCart);
 router.get('/initiallength', authenticate, cartController.fetchInitialCartLength);
-router.get('/getcartitems', authenticate, cartController.getCartItems);
+router.get('/getcart', authenticate, cartController.getCart);
 
 module.exports = router;

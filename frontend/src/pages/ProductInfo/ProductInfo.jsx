@@ -9,6 +9,7 @@ import ProductsDisplay from "../../components/ProductsDisplay/ProductsDisplay";
 import { CartContext } from "../../context/CartContext";
 import RatingStars from "../../assets/RatingStars/RatingStars";
 import Cookies from "js-cookie";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProductInfo = () => {
     const navigate = useNavigate();
@@ -26,10 +27,34 @@ const ProductInfo = () => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
 
+    const { verifyUser, user } = useContext(AuthContext);
     const { addItemToCart } = useContext(CartContext);
 
     const handleAddToCart = async (productId, quantity) => {
-        addItemToCart(productId, quantity).then(() => { fetchProductDetails() });
+        try{
+            const userResponse = await axios.get('http://localhost:4001/auth/getuserdetails', {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
+                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
+            }});
+
+            console.log(userResponse.status);
+
+            if(userResponse.status === 200){
+                addItemToCart(productId, quantity).then(() => { fetchProductDetails() });
+            }
+            else
+                console.log(userResponse.data);
+        }
+        catch (err){
+            if(err.response.status === 401){
+                alert('Please login first!');
+            }
+            else if(err.response.status === 403){
+                console.log('tokens expired');
+                navigate('login');
+            }
+        }
     };
 
 
@@ -57,7 +82,6 @@ const ProductInfo = () => {
             const response = await axios.get(`http://localhost:4001/products/productdetail/${productId}`);
 
             setProduct(response.data);
-            console.log("fetchProductDetails done", response);
         } catch (err) {
             console.error(err);
         }
@@ -66,18 +90,16 @@ const ProductInfo = () => {
     useEffect(() => {
         try {
             if(productId){
-                console.log("useEffect start");
                 fetchProductDetails();
 
                 fetchAllReviews();
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                console.log("done", product);
             }
         } catch (err) {
             console.error(err, "Couldn't fetch the product details");
         }
-    }, []);
+    }, [productId]);
 
     async function fetchBrandSearchResults() {
         try {
@@ -114,7 +136,6 @@ const ProductInfo = () => {
             const response = await axios.get(`http://localhost:4001/review/allreviewsbyproduct/${productId}`);
 
             setReviews(response.data.reviews);
-            console.log('reviews: ', response);
         }
         catch (error) {
             console.error("Error fetching all ", error);
@@ -128,34 +149,23 @@ const ProductInfo = () => {
                 setRating(0);
                 return;
             }
-            const userResponse = await axios.get('http://localhost:4001/auth/getuserdetails', {
+            
+            const data = {
+                userId: user._id,
+                productId: productId,
+                comment: comment,
+                stars: rating,
+            };
+
+            const response = await axios.post('http://localhost:4001/review/addreview', data, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('accessToken')}`,
                     Refresh: `Bearer ${Cookies.get('refreshToken')}`
-            }});
-
-            if(userResponse.status === 500){
-                alert(userResponse.message);
-            }
-            else{
-                const user = userResponse.data.user;
-                const data = {
-                    userId: user._id,
-                    productId: productId,
-                    comment: comment,
-                    stars: rating,
-                };
-
-                const response = await axios.post('http://localhost:4001/review/addreview', data, {
-                    headers: {
-                        Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                        Refresh: `Bearer ${Cookies.get('refreshToken')}`
                 }});
 
-                if(response.status === 200){
-                    fetchAllReviews();
-                    fetchProductDetails();
-                }
+            if(response.status === 200){
+                fetchAllReviews();
+                fetchProductDetails();
             }
             
             setComment("");
@@ -163,7 +173,7 @@ const ProductInfo = () => {
 
         }
         catch (error) {
-            console.error("Error add review:", error);
+            console.error("Error while adding a review:", error);
             alert("Please log in");
         }
     }
@@ -185,6 +195,9 @@ const ProductInfo = () => {
 
             fetchProductDetails();
             fetchAllReviews();
+
+            if(res.status === 200)
+            alert("Your review has been deleted!");
         }
         catch (error) {
             console.error("Error deleting the review", error);
@@ -223,8 +236,8 @@ const ProductInfo = () => {
                                         disabled={startIndex === 0}
                                         onClick={() => setStartIndex(Math.max(startIndex - visibleImageCnt, 0))}>&lt;</button>
 
-                                    {visibleImages.map((image) => (
-                                        <div className={`productinfo-carousel-preview-item ${mainImage === image ? 'productinfo-carousel-preview-set' : ''} `}>
+                                    {visibleImages.map((image, index) => (
+                                        <div key={index} className={`productinfo-carousel-preview-item ${mainImage === image ? 'productinfo-carousel-preview-set' : ''} `}>
                                             <img className="productinfo-carousel-preview-image" src={image} alt="product images preview" onClick={() => handlePreviewClick(image)} />
                                         </div>
                                     ))}
@@ -274,7 +287,12 @@ const ProductInfo = () => {
                         </div>
                         <div className="productinfo-right">
                             <p className="productinfo-title">{product.name}</p>
-                            <RatingStars rating={product.averageRating} /><p>{product.averageRating} from total {product.totalReviews} reviews</p>
+                            {product.averageRating > 0 ?
+                                (<><RatingStars rating={product.averageRating} /><p>{product.averageRating} stars out of {product.totalReviews} reviews</p></>) :
+                                product.totalReviews !== 0 ?
+                                (<p>{product.averageRating} stars out of {product.totalReviews} reviews</p>) :
+                                (<p>No reviews yet</p>)
+                            }
                             <hr className="productinfo-separator" />
                             <p className="productinfo-brand" onClick={() => navigate(`/search-results?term=${product.brand}`)}>{product.brand}</p>
                             <div className="productinfo-price">
@@ -305,10 +323,12 @@ const ProductInfo = () => {
                 </div>
 
 
+                {brandSearchResults.length > 0 ? (
                 <div className="productinfo-more">
                     <p className="productinfo-more-title">Products from the same brand :</p>
                     <ProductsDisplay products={brandSearchResults} fromSearch={false} />
                 </div>
+                ) : (<><p className="productinfo-more-title">No more products to show</p></>)}
             </div>
         </div>
     )

@@ -1,40 +1,42 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { AuthContext } from './AuthContext';
 
 const CartContext = createContext({
-    totalItems: 0,
-    fetchInitialCartLength: () => {},
+    cart: {},
+    getCart: () => {},
     addItemToCart: () => {},
     removeItemFromCart: () => {},
     deleteItemFromCart: () => {},
 });
 
 const CartProvider = ({ children }) => {
-    const [totalItems, setTotalItems] = useState(0);
+    const { user } = useContext(AuthContext);
+    const [cart, setCart] = useState(null);
 
-    const updateCartAndTriggerRender = async (newTotalItems) => {
-        setTotalItems(newTotalItems);
-    };
+    useEffect(() => {
+        if(user)
+            getCart();
+        else
+            setCart(null);
+    }, [user]);
 
-    const fetchInitialCartLength = async () => {
+    const getCart = async () => {
         try {
-            const response = await axios.get("http://localhost:4001/cart/initiallength", {
+            const response = await axios.get("http://localhost:4001/cart/getcart", {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('accessToken')}`,
                     Refresh: `Bearer ${Cookies.get('refreshToken')}`
                 }
             });
-
-            updateCartAndTriggerRender(response.data.cartLen);
-        } catch (error) {
+            
+            setCart(response.data.userCart);
+        }
+        catch (error) {
             console.error(error);
         }
     };
-
-    useEffect(() => {
-        fetchInitialCartLength();
-    }, []);
 
     const addItemToCart = async (productId, quantity) => {
         try {
@@ -45,7 +47,7 @@ const CartProvider = ({ children }) => {
                 }
             });
 
-            updateCartAndTriggerRender(response.data.cartLen);
+            setCart(response.data.userCart);
         } catch (error) {
             console.error(error);
         }
@@ -60,7 +62,7 @@ const CartProvider = ({ children }) => {
                 }
             });
             
-            updateCartAndTriggerRender(response.data.cartLen);
+            setCart(response.data.userCart);
         } catch (error) {
             console.error(error);
         }
@@ -75,7 +77,7 @@ const CartProvider = ({ children }) => {
                 }
             });
 
-            updateCartAndTriggerRender(response.data.cartLen);
+            setCart(response.data.userCart);
         } catch (error) {
             console.error(error);
         }
@@ -84,8 +86,8 @@ const CartProvider = ({ children }) => {
     return (
         <CartContext.Provider
             value={{
-                totalItems,
-                fetchInitialCartLength,
+                cart,
+                getCart,
                 addItemToCart,
                 removeItemFromCart,
                 deleteItemFromCart,

@@ -5,7 +5,7 @@ import './CartItemDisplay.css';
 import { CartContext } from "../../context/CartContext";
 import Decimal from "decimal.js";
 
-const CartItemDisplay = ({ item, getCartItems }) => {
+const CartItemDisplay = ({ item }) => {
     const [product, setProduct] = useState({});
     const { addItemToCart, removeItemFromCart, deleteItemFromCart } = useContext(CartContext);
 
@@ -20,11 +20,11 @@ const CartItemDisplay = ({ item, getCartItems }) => {
 
     const updateCart = async (action, productId) => {
         if(action === "add")
-            addItemToCart(productId, 1).then(() => getCartItems());
+            addItemToCart(productId, 1);
         if(action === "remove")
-            removeItemFromCart(productId).then(() => getCartItems());
+            removeItemFromCart(productId);
         if(action === "delete")
-            deleteItemFromCart(productId).then(() => getCartItems());
+            deleteItemFromCart(productId);
     }
 
     useEffect(() => {

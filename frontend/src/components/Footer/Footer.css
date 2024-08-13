@@ -1,0 +1,109 @@
+.footer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    background: #eee;
+    box-shadow: 0 -5px 100px -10px black;
+}
+
+.footer-wrapper {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-top {
+    padding: 20px;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.footer-top-name {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+.footer-top-extra {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: italic;
+}
+.footer-middle {
+    display: flex;
+    gap: 50px;
+    border-bottom: 1px solid black;
+}
+.footer-middle-left {
+    flex: 1 1;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.footer-middle-left-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+.footer-middle-left-links {
+    text-decoration: none;
+    color: black;
+    margin: 10px;
+    font-size: 18px;
+}
+.footer-middle-right {
+    flex: 2 1;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.footer-middle-right-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+.footer-middle-right-form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    align-items: center;
+}
+.footer-middle-right-formdiv {
+    display: flex;
+    width: 75%;
+    flex-direction: column;
+}
+.footer-middle-right-formdiv label {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 10px;
+}
+.footer-middle-right-formdiv input {
+    padding: 8px;
+    margin: 5px 0;
+    display: flex;
+    flex-direction: column;
+}
+.footer-middle-right-formdiv textarea{
+    resize: none;
+    padding: 8px;
+}
+.footer-middle-right-form button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    margin: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+.footer-middle-right-form button:hover {
+    cursor: pointer;
+    background: #006aee;
+}
+.footer-bottom {
+    text-align: center;
+    font-weight: 500;
+}

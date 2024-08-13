@@ -1,38 +1,21 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
-import { CartContext } from '../../context/CartContext';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { fetchInitialCartLength } = useContext(CartContext);
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:4001/auth/login', { email, password });
+            login({ email, password });
 
-            const { accessToken, refreshToken, role } = response.data;
-
-            // Store tokens and role in cookies
-            Cookies.set('accessToken', accessToken);
-            Cookies.set('refreshToken', refreshToken);
-            Cookies.set('role', role);
-
-            // Trigger update in Navbar component
-            window.dispatchEvent(new Event('userLoggedIn'));
-            fetchInitialCartLength();
-
-            if (role === 'admin') {
-                navigate('/admin');
-            } else {
-                navigate('/');
-            }
-
+            navigate('/');
         } catch (error) {
             console.error('Login failed:', error);
         }

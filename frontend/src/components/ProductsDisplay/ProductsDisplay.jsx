@@ -1,28 +1,24 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import RatingStars from '../../assets/RatingStars/RatingStars';
 import './ProductsDisplay.css';
 
 const ProductsDisplay = ({ products, fromSearch }) => {
-    const navigate = useNavigate();
-    
-    const handleClick = (productId) => {
-        navigate(`/product/${productId}`);
-    }
-
     return (
         <div className="productsdisplay">
             {products.map((product) => (
                 <div key={product._id} className={`productsdisplay-item ${fromSearch ? "productsdisplay-item-fromSearch" : "productsdisplay-item-notFromSearch"}`}>
                     <div className="productsdisplay-item-container">
-                        <div className="productsdisplay-link" onClick={() => handleClick(product._id)} >
+                        <Link to={`/product/${product._id}`} className="productsdisplay-link">
                             <img className="productsdisplay-item-image" src={product.images[0]} alt='image'/>
-                        </div>
+                        </Link>
                     </div>
 
                     <div className="productsdisplay-item-text">
-                        <div className="productsdisplay-link" onClick={() => handleClick(product._id)} >
-                            <p className="productsdisplay-item-name" onClick={() => handleClick(product._id)} >{product.name}</p>
-                        </div>
+                        <Link to={`/product/${product._id}`} className="productsdisplay-link">
+                            <p className="productsdisplay-item-name">{product.name}</p>
+                        </Link>
+                        {product.averageRating > 0 ? (<RatingStars rating={product.averageRating} />) : product.averageRating === 0 ? (<p className="productsdisplay-item-review">0 Stars</p>) : (<p className="productsdisplay-item-review">No reviews yet</p>)}
                         <p className="productsdisplay-item-price">{product.new_price}</p>
                     </div>
                 </div>
@@ -32,3 +28,4 @@ const ProductsDisplay = ({ products, fromSearch }) => {
 };
 
 export default ProductsDisplay;
+

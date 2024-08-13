@@ -1,5 +1,5 @@
 .productinfo {
-    background: #eee;
+    background: #bbb;
 }
 
 .productinfo-wrapper {
@@ -18,23 +18,17 @@
 
 .productinfo-breadcrumb {
     display: flex;
-    font-size: 8px;
-    font-weight: 500;
-    margin-block: 10px;
-    color: #444;
+    font-size: 16px;
 }
 
 .productinfo-breadcrumb p {
     display: flex;
     align-items: center;
-    padding: 0;
-    margin: 0;
 }
 
 .productinfo-breadcrumb-svg {
     height: 20px;
     margin-inline: -10px;
-    fill: #444;
 }
 
 .productinfo-content {
@@ -158,7 +152,7 @@
 .productinfo-review-wrapper {
     padding: 20px 0 20px 20px;
     border: 2px solid #d8d8d8;
-    background: #fff;
+    background: #eee;
     border-radius: 10px;
 }
 .productinfo-review-top {
@@ -217,7 +211,6 @@
     padding: 0;
     margin: 0 10px;
     border: none;
-    background: white;
 }
 .productinfo-review-menu svg {
     height: 18px;
@@ -225,7 +218,7 @@
     padding: 5px;
 }
 .productinfo-review-menu svg:hover {
-    background: #eee;
+    background: #ddd;
     border-radius: 15px;
     cursor: pointer;
 }
@@ -244,7 +237,7 @@
     padding-block: 30px;
     border: 2px solid #d8d8d8;
     border-radius: 10px;
-    background: #fff;
+    background: #eee;
     height: 100%;
 }
 
@@ -359,9 +352,9 @@
 .productinfo-more {
     margin-block: 70px;
     width: 80%;
-    background: #ddd;
+    background: #eee;
     border: 2px solid #d8d8d8;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
 }
 .productinfo-more-title {
     font-weight: 600;

@@ -11,8 +11,8 @@
     display: flex;
     flex-direction: column;
     background: #fff;
-    flex: 1 0;
     margin: 1px;
+    min-width: 230px;
 }
 .productsdisplay-link {
     text-decoration: none;
@@ -21,16 +21,17 @@
     font-weight: 600;
     color: black;
 }
-.productsdisplay-link: hover {
+.productsdisplay-link:hover {
     cursor: pointer;
 }
+.productsdisplay-item-review {
+    font-size: 14px;
+    color: #999;
+    font-style: italic;
+}
 .productsdisplay-item-fromSearch {
-    max-width: 27%;
-    min-width: 20%;
 }
 .productsdisplay-item-notFromSearch {
-    max-width: 16%;
-    min-width: 10%;
 }
 
 .productsdisplay-item-container {

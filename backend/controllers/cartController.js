@@ -91,7 +91,7 @@ const addToCart = async (req, res) => {
         }, new Decimal(0));
         await userCart.save();
 
-        res.json({ message: "Item added to cart successfully", cartLen: userCart.items.length });
+        res.json({ message: "Item added to cart successfully", userCart: userCart });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error adding item to cart" });
@@ -129,7 +129,7 @@ const removeFromCart = async (req, res) => {
             return acc.plus(price.mul(quantity));
         }, new Decimal(0));
         await userCart.save();
-        res.json({ message: "Item removed from cart successfully", cartLen: userCart.items.length });
+        res.json({ message: "Item removed from cart successfully", userCart: userCart });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error removing item from cart" });
@@ -163,7 +163,7 @@ const deleteFromCart = async (req, res) => {
         }, new Decimal(0));
         await userCart.save();
 
-        res.json({ message: "Item deleted from cart successfully", cartLen: userCart.items.length });
+        res.json({ message: "Item deleted from cart successfully", userCart: userCart });
     }
     catch (error) {
         console.error(error);
@@ -185,13 +185,13 @@ const fetchInitialCartLength = async (req, res) => {
     }
 }
 
-const getCartItems = async (req, res) => {
+const getCart = async (req, res) => {
     try {
         let userCart = await Cart.findOne({ userId: req.userId });
         if(!userCart)
             return res.json({ message: "No cart found" });
 
-        res.json({ cartItems: userCart.items });
+        res.json({ userCart: userCart });
     }
     catch (error) {
         console.error(error);
@@ -199,4 +199,4 @@ const getCartItems = async (req, res) => {
     }
 }
 
-module.exports = { mergeCart, addToCart, removeFromCart, deleteFromCart, fetchInitialCartLength, getCartItems };
+module.exports = { mergeCart, addToCart, removeFromCart, deleteFromCart, fetchInitialCartLength, getCart };

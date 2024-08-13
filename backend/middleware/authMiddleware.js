@@ -5,8 +5,8 @@ const User = require('../models/user');
 const authenticate = async (req, res, next) => {
     const accessToken = req.headers.authorization?.split(' ')[1];
 
-    if (!accessToken) {
-        return res.status(401).json({ error: 'Unauthorized' });
+    if (!accessToken || accessToken.length === 0 || accessToken === 'undefined') {
+        return res.status(401).json({ error: 'Invalid access token' });
     }
 
     try {
@@ -24,8 +24,8 @@ const authenticate = async (req, res, next) => {
         if (error.name === 'TokenExpiredError') {
             const refreshToken = req.headers.refresh?.split(' ')[1];
 
-            if (!refreshToken) {
-                return res.status(403).json({ error: 'Invalid or expired token' });
+            if (!refreshToken || refreshToken.length === 0 || refreshToken === 'undefined') {
+                return res.status(401).json({ error: 'Invalid refresh token' });
             }
 
             try {
@@ -43,12 +43,10 @@ const authenticate = async (req, res, next) => {
 
                 next();
             } catch (refreshError) {
-                console.error('Failed to refresh access token:', refreshError);
-                return res.status(403).json({ error: 'Invalid refresh token or failed refresh' });
+                return res.status(403).json({ error: 'Failed to refresh access token' });
             }
         } else {
-            console.error('Failed to verify access token:', error);
-            return res.status(403).json({ error: 'Invalid or expired token' });
+            return res.status(403).json({ error: 'Failed to verify access token' });
         }
     }
 };

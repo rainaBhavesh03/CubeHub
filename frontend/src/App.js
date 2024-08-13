@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Landing from './pages/Landing/Landing';
 import Admin from './pages/Admin/Admin';
@@ -10,12 +10,20 @@ import ProductInfo from './pages/ProductInfo/ProductInfo';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Cart from './pages/Cart/Cart';
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import Checkout from './pages/Checkout/Checkout';
+import Footer from './components/Footer/Footer';
 
 const App = () => {
+    const location = useLocation();
+    const noHeader = ['/login', '/register', '/forgot-password', '/reset-password'];
+    const noFooter = ['/login', '/register', '/forgot-password', '/reset-password', '/admin', '/checkout'];
+
     return (
+        <AuthProvider>
         <CartProvider>
-            <Navbar />
+            {noHeader.some(path => location.pathname.startsWith(path)) || <Navbar />}
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -26,8 +34,11 @@ const App = () => {
                 <Route path="/admin/*" element={<Admin />} />
                 <Route path="/search-results" element={<SearchResult />} />
                 <Route path="/product/:productId" element={<ProductInfo />} />
+                <Route path="/checkout" element={<Checkout />} />
             </Routes>
+            {noFooter.some(path => location.pathname.startsWith(path)) || <Footer />}
         </ CartProvider>
+        </ AuthProvider>
     );
 };
 

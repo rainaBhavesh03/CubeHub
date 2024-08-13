@@ -1,51 +1,37 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 import CartItemDisplay from '../../components/CartItemDisplay/CartItemDisplay';
+import { CartContext } from '../../context/CartContext';
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const navigate = useNavigate();
 
-
-
-    const getCartItems = async () => {
-        try {
-            const response = await axios.get("http://localhost:4001/cart/getcartitems", {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
-                }
-            });
-            
-            setCartItems(response.data.cartItems);
-        }
-        catch (error) {
-            console.error(error);
-        }
-    };
-    useEffect(() => {
-        getCartItems();
-    }, []);
+    const { cart } = useContext(CartContext);
 
     return (
         <div className="cart-wrapper">
             <div className="cart-content">
-                <div className="cart-left">
-                    {cartItems.length > 0 ? (
-                        <div className="cart">
-                            <p className="cart-title">Your Cart :</p>
-                            {cartItems.map((item) => (
-                                <CartItemDisplay key={item._id} item={item} getCartItems={getCartItems}/>
-                            ))}
+                {!cart ? (
+                    <p className="cart-message">Login to access your cart!</p>
+                ) : cart.items.length > 0 ? (
+                    <><div className="cart-left">
+                        <p className="cart-title">My Cart :</p>
+                        {cart.items.map((item) => (
+                            <CartItemDisplay key={item._id} item={item} />
+                        ))}
+                    </div>
+                    <div className="cart-right">
+                        <div className="cart-right-wrapper">
+                            <div className="cart-right-top">
+                                <span>Grand Total:</span><span>{cart.grandTotal}</span>
+                            </div>
+                            <button className="cart-right-btn" onClick={() => navigate('/checkout')}>Checkout</button>
                         </div>
-                    ) : (
-                        <p>No products in your cart! Continue to shop...</p>
-                    )}
-                </div>
-                <div className="cart-right">
-                </div>
+                    </div></>
+                ) : (
+                    <p>No products in your cart! Continue to shop...</p>
+                )}
             </div>
         </div>
     );
