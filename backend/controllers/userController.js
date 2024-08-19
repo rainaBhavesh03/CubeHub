@@ -4,7 +4,7 @@ const OTP = require('../models/otp');
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const otpGenerator = require('otp-generator');
-const mailSender = require('../utils/sendMail.js');
+const { sendMail, contactMeMail } = require('../utils/sendMail.js');
 const { default: mongoose } = require('mongoose');
 const expireTime = '1d';
 
@@ -174,7 +174,7 @@ const resetPasswordToken = async (req, res) => {
 
         console.log(updatedDetails);
         const url = `http://localhost:3000/reset-password/${token}`
-        await mailSender(email, 
+        await sendMail(email, 
                         "Find your password reset link for your CubeHub account below :",
                         `Password Reset Link: ${url}`);
 
@@ -268,5 +268,27 @@ const verifyUser = (req, res) => {
     res.status(200).json({ message: "User verified"});
 };
 
-module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword, getUserDetails, verifyUser };
+const contactMe = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const name = req.body.name;
+        const message = req.body.message;
+
+        await contactMeMail(email, name, message);
+
+        return res.status(200).json({
+            success:true,
+            message:'Email sent successfully',
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:'Something went wrong while sending mail'
+        })
+    }  
+};
+
+module.exports = { sendOtp, register, login, refreshToken, logout, resetPasswordToken, resetPassword, getUserDetails, verifyUser, contactMe };
 

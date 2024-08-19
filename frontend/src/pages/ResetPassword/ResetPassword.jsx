@@ -12,6 +12,10 @@ const ResetPassword = () => {
     const { token } = useParams();
 
     const handleToken = async () => {
+        if(!password || password === undefined || !confirmPassword || confirmPassword === undefined){
+            alert('Please enter all details!');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:4001/auth/reset-password', { password, confirmPassword, token }); 
 

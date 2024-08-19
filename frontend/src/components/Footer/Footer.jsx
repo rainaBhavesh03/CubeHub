@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import './Footer.css';
@@ -6,13 +7,15 @@ import './Footer.css';
 const Footer = () => {
     const { user } = useContext(AuthContext);
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: '',
-    });
+    const [formData, setFormData] = useState({});
 
-    const [submitted, setSubmitted] = useState(false);
+    useEffect(() => {
+        setFormData({
+            name: user?.username || '',
+            email: user?.email || '',
+            message: '',
+        });
+    }, [user]);
 
     const handleChange = (e) => {
         setFormData({
@@ -21,10 +24,23 @@ const Footer = () => {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form submitted:', formData);
-        setSubmitted(true);
+    const handleSubmit = async (e) => {
+        try{
+            e.preventDefault();
+
+            const res = await axios.post('http://localhost:4001/auth/contactme', formData);
+
+            console.log('mail sent', res.data.message);
+            alert('Thank you! Your message has been sent.');
+            setFormData({
+                name: user?.username || '',
+                email: user?.email || '',
+                message: '',
+            });
+        }
+        catch (err){
+            console.error(err);
+        }
     };
 
     return (
@@ -39,50 +55,46 @@ const Footer = () => {
                         <p className="footer-middle-left-title">Some of my links</p>
                         <Link className="footer-middle-left-links" to='https://github.com/rainaBhavesh03/'>Github</Link>
                         <Link className="footer-middle-left-links" to='https://leetcode.com/rainaBhavesh03/'>Leetcode</Link>
-                        <Link className="footer-middle-left-links" to='https://linkedin.com/rainabhavesh03/'>Linkedin</Link>
+                        <Link className="footer-middle-left-links" to='https://linkedin.com/in/rainabhavesh03/'>Linkedin</Link>
                     </div>
                     <div className="footer-middle-right">
                         <p className="footer-middle-right-title">Contact Me</p>
-                        {submitted ? (
-                            <p>Thank you for your message!</p>
-                        ) : (
-                            <form className="footer-middle-right-form" onSubmit={handleSubmit}>
-                                <div className="footer-middle-right-formdiv">
-                                    <label htmlFor="email">Email:</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={user?.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="footer-middle-right-formdiv">
-                                    <label htmlFor="name">Name:</label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="footer-middle-right-formdiv">
-                                    <label htmlFor="message">Message:</label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        required
-                                        rows="5"
-                                    ></textarea>
-                                </div>
-                                <button type="submit">Send Message</button>
-                            </form>
-                        )}
+                        <form className="footer-middle-right-form" onSubmit={handleSubmit}>
+                            <div className="footer-middle-right-formdiv">
+                                <label htmlFor="email">Email:</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="footer-middle-right-formdiv">
+                                <label htmlFor="name">Name:</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="footer-middle-right-formdiv">
+                                <label htmlFor="message">Message:</label>
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    required
+                                    rows="5"
+                                ></textarea>
+                            </div>
+                            <button type="submit">Send Message</button>
+                        </form>
                     </div>
                 </div>
                 <div className="footer-bottom">

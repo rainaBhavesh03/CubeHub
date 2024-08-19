@@ -5,9 +5,11 @@ const User = require('../models/user');
 const authenticate = async (req, res, next) => {
     const accessToken = req.headers.authorization?.split(' ')[1];
 
-    if (!accessToken || accessToken.length === 0 || accessToken === 'undefined') {
+    if (!accessToken || accessToken.length === 0 || accessToken === 'undefined' || accessToken === undefined) {
         return res.status(401).json({ error: 'Invalid access token' });
     }
+
+    console.log('got accessToken');
 
     try {
         const decoded = jwt.verify(accessToken, 'your-secret-key');

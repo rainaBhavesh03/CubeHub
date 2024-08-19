@@ -1,9 +1,10 @@
 .login {
     background: rgb(240, 244, 249);
+    height: 100vh;
     display: flex;
-    height: 1000px;
-    justify-content: center;
     align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .login-content {
@@ -13,6 +14,7 @@
     border-radius: 20px;
     gap: 100px;
     width: 50%;
+    border: 2px solid rgb(220, 224, 229);
 }
 
 .login-left {
@@ -28,8 +30,7 @@
 .login-text {
     padding: 0;
     margin: 0;
-    font-size: 16px;
-    font-weight: 300;
+    font-size: 18px;
 }
 
 
@@ -39,8 +40,9 @@
     flex: 1 0;
 }
 .login-label {
-    font-size: 16px;
+    font-size: 18px;
     margin-block: 10px 0;
+    font-weight: 500;
 }
 .login-id-input {
     border: 1px solid grey;
@@ -62,12 +64,13 @@
 .login-show {
     display: flex;
     align-items: center;
+    margin-block: 0 20px;
 }
 .login-showpass {
-    font-size: 16px;
+    height: 18px;
+    width: 18px;
 }
 .login-show-label {
-    font-size: 16px;
     padding: 0;
     margin: 0 10px;
 }
@@ -81,7 +84,6 @@
 }
 .login-register {
     text-decoration: none;
-    font-size: 14px;
     color: blue;
 }
 
@@ -95,4 +97,7 @@
     font-weight: 500;
     line-height: 18px;
     cursor: pointer;
+}
+.login-btn:hover {
+    background: #0000dd;
 }

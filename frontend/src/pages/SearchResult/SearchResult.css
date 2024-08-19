@@ -4,6 +4,10 @@
     padding-block: 10px 100px;
     margin-left: auto;
     margin-right: auto;
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .searchresults-breadcrumb {

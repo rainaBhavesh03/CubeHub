@@ -30,7 +30,7 @@ const mergeCart = async (req, res) => {
         userCart.items = [...userCart.items, ...updatedItems];
         await userCart.save();
 
-        res.json({ message: "Carts merged successfully", cartLen: userCart.items.length });
+        res.status(200).json({ message: "Carts merged successfully", cartLen: userCart.items.length });
     }
     catch (error) {
         console.error(error);
@@ -91,7 +91,7 @@ const addToCart = async (req, res) => {
         }, new Decimal(0));
         await userCart.save();
 
-        res.json({ message: "Item added to cart successfully", userCart: userCart });
+        res.status(200).json({ message: "Item added to cart successfully", userCart: userCart });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error adding item to cart" });
@@ -129,7 +129,7 @@ const removeFromCart = async (req, res) => {
             return acc.plus(price.mul(quantity));
         }, new Decimal(0));
         await userCart.save();
-        res.json({ message: "Item removed from cart successfully", userCart: userCart });
+        res.status(200).json({ message: "Item removed from cart successfully", userCart: userCart });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error removing item from cart" });
@@ -163,7 +163,7 @@ const deleteFromCart = async (req, res) => {
         }, new Decimal(0));
         await userCart.save();
 
-        res.json({ message: "Item deleted from cart successfully", userCart: userCart });
+        res.status(200).json({ message: "Item deleted from cart successfully", userCart: userCart });
     }
     catch (error) {
         console.error(error);
@@ -177,7 +177,7 @@ const fetchInitialCartLength = async (req, res) => {
         if(!userCart)
             return res.json({ message: "No cart found" });
 
-        res.json({ cartLen: userCart.items.length });
+        res.status(200).json({ cartLen: userCart.items.length });
     }
     catch (error) {
         console.error(error);
@@ -191,7 +191,7 @@ const getCart = async (req, res) => {
         if(!userCart)
             return res.json({ message: "No cart found" });
 
-        res.json({ userCart: userCart });
+        res.status(200).json({ userCart: userCart });
     }
     catch (error) {
         console.error(error);

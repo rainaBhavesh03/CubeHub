@@ -1,7 +1,7 @@
 .register {
     background: rgb(240, 244, 249);
     display: flex;
-    height: 1000px;
+    height: 100vh;
     justify-content: center;
     align-items: center;
 }
@@ -13,6 +13,7 @@
     border-radius: 20px;
     gap: 100px;
     width: 50%;
+    border: 2px solid rgb(220, 224, 229);
 }
 
 .register-left {
@@ -24,7 +25,6 @@
     font-size: 36px;
     font-family: Roboto;
     font-weight: 500;
-
 }
 
 
@@ -34,8 +34,9 @@
     flex: 1 0;
 }
 .register-label {
-    font-size: 16px;
+    font-size: 18px;
     margin-block: 10px 0;
+    font-weight: 500;
 }
 .register-id-input {
     border: 1px solid grey;
@@ -57,12 +58,13 @@
 .register-show {
     display: flex;
     align-items: center;
+    margin-block: 0 20px;
 }
 .register-showpass {
-    font-size: 16px;
+    height: 18px;
+    width: 18px;
 }
 .register-show-label {
-    font-size: 16px;
     padding: 0;
     margin: 0 10px;
 }
@@ -76,7 +78,6 @@
 }
 .register-register {
     text-decoration: none;
-    font-size: 14px;
     color: blue;
 }
 
@@ -91,4 +92,6 @@
     line-height: 18px;
     cursor: pointer;
 }
-
+.register-btn:hover {
+    background: #0000dd;
+}

@@ -183,7 +183,66 @@ module.exports = {
                 },
             ]);
 
-            res.status(200).json(results);
+            const categories = req.query.categories;
+            const types = req.query.types;
+            const rating = req.query.rating;
+            const priceRange = req.query.price_range ? JSON.parse(req.query.price_range) : undefined;
+            const sort = req.query.sort_by;
+
+            let searchResults = [...results];
+
+            // Filter by multiple categories
+            if (categories && categories.length > 0) {
+                searchResults = searchResults.filter(product =>
+                    product.category && product.category.some(catId => categories.includes(catId))
+                );
+            }
+
+            // Filter by multiple types
+            if (types && types.length > 0) {
+                searchResults = searchResults.filter(product =>
+                    product.type && product.type.some(typeId => types.includes(typeId))
+                );
+            }
+
+            // Filter by rating
+            if (rating) {
+                searchResults = searchResults.filter(product =>
+                    product.averageRating >= parseFloat(rating)
+                );
+            }
+
+            // Filter by price range
+            if (priceRange && (priceRange.min || priceRange.max)) {
+                searchResults = searchResults.filter(product => {
+                    const price = product.new_price;
+                    return (!priceRange.min || price >= parseFloat(priceRange.min)) &&
+                        (!priceRange.max || price <= parseFloat(priceRange.max));
+                });
+            }
+
+
+            switch (sort) {
+                case 'price-asc':
+                    searchResults.sort((a, b) => a.new_price - b.new_price);
+                    break;
+                case 'price-desc':
+                    searchResults.sort((a, b) => b.new_price - a.new_price);
+                    break;
+                case 'rating':
+                    searchResults.sort((a, b) => b.averageRating - a.averageRating);
+                    break;
+                case 'name-desc':
+                    searchResults.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                default:
+                    searchResults.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+
+
+
+            res.status(200).json(searchResults);
         } catch (error) {
             console.error('Error searching products:', error);
             res.status(500).json({ error: 'Internal Server Error' });

@@ -1,0 +1,23 @@
+.skeleton-box {
+    background: linear-gradient(90deg, #bbb 20%, #fff 50%, #bbb 60%);
+    background-size: 300% 100%;
+    border-radius: 5px;
+    margin: 2px;
+
+    -webkit-animation: AnimationName 1s linear infinite;
+    -moz-animation: AnimationName 1s linear infinite;
+    animation: AnimationName 1s linear infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:100% 0%}
+    100%{background-position:-50% 0%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:100% 0%}
+    100%{background-position:-50% 0%}
+}
+@keyframes AnimationName {
+    0%{background-position:100% 0%}
+    100%{background-position:-50% 0%}
+}

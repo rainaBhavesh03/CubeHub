@@ -8,6 +8,10 @@ const ForgotPassword = () => {
     const [tokenSent, setTokenSent] = useState(false);
 
     const handleForgotPassword = async () => {
+        if(!email || email === undefined){
+            alert('Please enter your email first!');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:4001/auth/reset-passwordToken', { email });
             
@@ -27,7 +31,7 @@ const ForgotPassword = () => {
                     <p className="forgotpassword-header">Reset your CubeHub account password</p>
                 </div>
                 {tokenSent ? (
-                    <div className="forgotpassword-right">
+                    <div className="forgotpassword-token">
                         <p className="forgotpassword-tokenmessage">We have sent an email to your email id : {email}<br />Use the provided link in the mail to reset your password.</p>
                     </div>
                 ) : (

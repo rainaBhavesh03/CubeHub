@@ -4,12 +4,13 @@ import ReactMarkdown from "react-markdown";
 import useReactRouterBreadcrumbs from "use-react-router-breadcrumbs";
 import './ProductInfo.css';
 import remarkGfm from 'remark-gfm';
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductsDisplay from "../../components/ProductsDisplay/ProductsDisplay";
 import { CartContext } from "../../context/CartContext";
 import RatingStars from "../../assets/RatingStars/RatingStars";
 import Cookies from "js-cookie";
 import { AuthContext } from "../../context/AuthContext";
+import Skeleton from "../../components/Skeleton/Skeleton";
 
 const ProductInfo = () => {
     const navigate = useNavigate();
@@ -27,33 +28,27 @@ const ProductInfo = () => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
 
-    const { verifyUser, user } = useContext(AuthContext);
+    const [showSkeleton, setShowSkeleton] = useState(true);
+
+    const { user } = useContext(AuthContext);
     const { addItemToCart } = useContext(CartContext);
 
     const handleAddToCart = async (productId, quantity) => {
-        try{
-            const userResponse = await axios.get('http://localhost:4001/auth/getuserdetails', {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('accessToken')}`,
-                    Refresh: `Bearer ${Cookies.get('refreshToken')}`
-            }});
-
-            console.log(userResponse.status);
-
-            if(userResponse.status === 200){
-                addItemToCart(productId, quantity).then(() => { fetchProductDetails() });
-            }
-            else
-                console.log(userResponse.data);
+        // we need to use await here as the function returns a promise
+        const res = await addItemToCart(productId, quantity);
+        if(res.status === 200){
+            await fetchProductDetails();
         }
-        catch (err){
-            if(err.response.status === 401){
-                alert('Please login first!');
-            }
-            else if(err.response.status === 403){
-                console.log('tokens expired');
-                navigate('login');
-            }
+        else if(res.status === 401){
+            alert('Please login first!');
+        }
+        else if(res.status === 403){
+            console.log('tokens expired');
+            navigate('login');
+        }
+        else{
+            alert('Something went wrong!');
+            console.error('unknown error hai', res.message);
         }
     };
 
@@ -88,16 +83,17 @@ const ProductInfo = () => {
     }
 
     useEffect(() => {
+        setShowSkeleton(true);
         try {
             if(productId){
                 fetchProductDetails();
-
                 fetchAllReviews();
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         } catch (err) {
             console.error(err, "Couldn't fetch the product details");
+        }
+        finally {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }, [productId]);
 
@@ -115,11 +111,6 @@ const ProductInfo = () => {
     }
 
     useEffect(() => {
-        if(product.brand){
-            fetchBrandSearchResults();
-        }
-    }, [product]);
-    useEffect(() => {
         if(product.images && product.images.length > 0)
             setMainImage(product.images[0]);
     }, [product]);
@@ -127,8 +118,12 @@ const ProductInfo = () => {
         if(product.images && product.images.length > 0){
             setVisibleImages(product.images.slice(startIndex, startIndex + visibleImageCnt));
         }
-
     }, [product, startIndex]);
+    useEffect(() => {
+        if(product.brand){
+            fetchBrandSearchResults().then(() => setShowSkeleton(false));
+        }
+    }, [product]);
 
 
     const fetchAllReviews = async () => {
@@ -207,22 +202,124 @@ const ProductInfo = () => {
     return (
         <div className="productinfo">
             {showModal && (<ProductInfo_Modal />)}
-            <div className="productinfo-wrapper">
-                <div className="productinfo-section">
-                    <div className="productinfo-breadcrumb">
-                        {breadcrumbs.map((crumb, index) => (
-                            <p key={index}>
-                                {index !== breadcrumbs.length - 1 ? (
-                                    <a href={crumb.pathname}>{crumb.breadcrumb}</a>
-                                ) : (
-                                    <span>{product.name || crumb.breadcrumb}</span>
-                                )}
-                                <svg className="productinfo-breadcrumb-svg" height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.17 32.92l9.17-9.17-9.17-9.17 2.83-2.83 12 12-12 12z"/>
-                                </svg>
-                            </p>
-                        ))}
+            <div className="productinfo-section">
+                <div className="productinfo-breadcrumb">
+                    {breadcrumbs.map((crumb, index) => (
+                        <p key={index}>
+                            {index !== breadcrumbs.length - 1 ? (
+                                <a href={crumb.pathname}>{crumb.breadcrumb}</a>
+                            ) : (
+                                <span>{product.name || crumb.breadcrumb}</span>
+                            )}
+                            <svg className="productinfo-breadcrumb-svg" height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.17 32.92l9.17-9.17-9.17-9.17 2.83-2.83 12 12-12 12z"/>
+                            </svg>
+                        </p>
+                    ))}
+                </div>
+                {showSkeleton ? (
+                    <div className="productinfo-content">
+                        <div className="productinfo-left">
+                            <div className="productinfo-carousel">
+                                <Skeleton height={300} width={300} />
+                                <hr className="productinfo-carousel-separator" />
+                                <div className="productinfo-carousel-preview">
+                                    <button
+                                        className="productinfo-carousel-nav-btn"
+                                        disabled>&lt;</button>
+
+                                        <Skeleton height={60} width={60} />
+                                        <Skeleton height={60} width={60} />
+                                        <Skeleton height={60} width={60} />
+
+                                    <button
+                                        className="productinfo-carousel-nav-btn"
+                                        disabled>&gt;</button>
+                                </div>
+                            </div>
+
+                            <div className="productinfo-review-wrapper">
+                                <div className="productinfo-review-top">
+                                    <Skeleton height={16} width={150} />
+                                    <br/>
+                                    <Skeleton height={20} width={300} />
+                                    <Skeleton height={24} width={50} />
+                                </div>
+
+                                <div className="productinfo-review-bottom">
+                                    <div className="productinfo-review">
+                                        <div className="productinfo-review-details">
+                                            <div className="productinfo-review-details-header">
+                                                <Skeleton height={16} width={150} />
+                                            </div>
+                                        </div>
+                                        <Skeleton height={20} width={300} />
+                                        <Skeleton height={14} width={100} />
+                                    </div>
+                                    <div className="productinfo-review">
+                                        <div className="productinfo-review-details">
+                                            <div className="productinfo-review-details-header">
+                                                <Skeleton height={16} width={150} />
+                                            </div>
+                                        </div>
+                                        <Skeleton height={20} width={300} />
+                                        <Skeleton height={14} width={100} />
+                                    </div>
+                                    <div className="productinfo-review">
+                                        <div className="productinfo-review-details">
+                                            <div className="productinfo-review-details-header">
+                                                <Skeleton height={16} width={150} />
+                                            </div>
+                                        </div>
+                                        <Skeleton height={20} width={300} />
+                                        <Skeleton height={14} width={100} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="productinfo-right">
+                            <Skeleton height={30} width={400} />
+                            <Skeleton height={16} width={100} />
+                            <hr className="productinfo-separator" />
+                            <Skeleton height={22} width={50} />
+                            <div className="productinfo-price">
+                                <Skeleton height={16} width={100} />
+                                <br/>
+                                <Skeleton height={16} width={100} />
+                            </div>
+                            <div className="productinfo-stock">
+                                <Skeleton height={20} width={50} />
+                            </div>
+                            <hr className="productinfo-separator" />
+                            <div className="productinfo-quantity">
+                                <Skeleton height={16} width={50} />
+                                <Skeleton height={16} width={50} />
+                            </div>
+                            <Skeleton height={22} width={150} />
+                            <hr className="productinfo-separator" />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={20} width={150} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={16} width={350} />
+                            <Skeleton height={30} width={0} />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={20} width={150} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={16} width={350} />
+                            <Skeleton height={30} width={0} />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={20} width={150} />
+                            <Skeleton height={18} width={400} />
+                            <Skeleton height={16} width={250} />
+                            <Skeleton height={16} width={350} />
+                        </div>
                     </div>
+                ) : (
                     <div className="productinfo-content">
                         <div className="productinfo-left">
                             <div className="productinfo-carousel">
@@ -261,13 +358,13 @@ const ProductInfo = () => {
                                     <button className="productinfo-review-btn" onClick={handleAddReview} >Add</button>
                                 </div>
 
-                                {!reviews || reviews.length === 0 ? (<p>Be the first one to add a review!</p>) : (
+                                {!reviews || reviews.length === 0 ? (<p className="productinfo-review-none">Be the first one to add a review!</p>) : (
                                 <div className="productinfo-review-bottom">
                                     {reviews.map((review, index) => (
                                         <div className="productinfo-review" key={index}>
                                             <div className="productinfo-review-details">
                                                 <div className="productinfo-review-details-header">
-                                                    {review.userId.username + ' ' + review.stars + '/5'}
+                                                    <span className="productinfo-review-details-user">{review.userId.username}</span><span className="productinfo-review-details-rating">{review.stars}/5</span>
                                                     <RatingStars rating={review.stars} />
                                                 </div>
                                                 <button className="productinfo-review-menu" onClick={() => handleDeleteReview(review)} >
@@ -278,7 +375,7 @@ const ProductInfo = () => {
                                                 </button>
                                             </div>
                                             <p className="productinfo-review-comment">{review.comment}</p>
-                                            <span>CreatedAt: {review.createdAt}</span>
+                                            <span className="productinfo-review-date">CreatedAt: {review.createdAt}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -320,16 +417,16 @@ const ProductInfo = () => {
                             <ReactMarkdown className="productinfo-description" remarkPlugins={remarkGfm}>{product.description}</ReactMarkdown>
                         </div>
                     </div>
-                </div>
-
-
-                {brandSearchResults.length > 0 ? (
-                <div className="productinfo-more">
-                    <p className="productinfo-more-title">Products from the same brand :</p>
-                    <ProductsDisplay products={brandSearchResults} fromSearch={false} />
-                </div>
-                ) : (<><p className="productinfo-more-title">No more products to show</p></>)}
+                )}
             </div>
+
+
+            {brandSearchResults.length > 0 ? (
+            <div className="productinfo-more">
+                <p className="productinfo-more-title">Products from the same brand :</p>
+                <ProductsDisplay products={brandSearchResults} showSkeleton={showSkeleton} />
+            </div>
+            ) : (<div className="productinfo-more"><p className="productinfo-more-title">No more products to show</p></div>)}
         </div>
     )
 };

@@ -2,30 +2,37 @@ import React, { useEffect, useState } from 'react';
 import './SearchResult.css';
 import ProductsDisplay from '../../components/ProductsDisplay/ProductsDisplay';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs';
 import Slider from 'react-slider';
 
 const SearchResult = () => {
+    const [searchParams] = useSearchParams();
+    const categoryParam = searchParams.get('categories')?.length > 0 ? searchParams.get('categories').split(',') : [];
+    const sortParam = searchParams.get('sort') || 'name-asc';
+    const typeParam = searchParams.get('types')?.length > 0 ? searchParams.get('types').split(',') : [];
+    const ratingParam = searchParams.get('rating') || 0;
+    const priceParam = { min: 0, max: 10000 };
+
     const [searchResults, setSearchResults] = useState([]);
-    const [filteredResults, setFilteredResults] = useState([]);
-    const [sortOption, setSortOption] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [selectedTypes, setSelectedTypes] = useState([]);
-    const [selectedRating, setSelectedRating] = useState('');
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
+    const [sortOption, setSortOption] = useState(sortParam);
+    const [selectedCategories, setSelectedCategories] = useState(categoryParam);
+    const [selectedTypes, setSelectedTypes] = useState(typeParam);
+    const [selectedRating, setSelectedRating] = useState(ratingParam);
+    const [priceRange, setPriceRange] = useState(priceParam);
     const [categories, setCategories] = useState([]);
     const [types, setTypes] = useState([]);
 
-    const location = useLocation();
-    const searchTerm = location.search.split('=')[1];
+    const [showSkeleton, setShowSkeleton] = useState(true);
+    const [reset, setReset] = useState(false);
+
+    const searchTerm = searchParams.get('term') || '';
     const breadcrumbs = useReactRouterBreadcrumbs();
 
     const fetchSearchResults = async () => {
         try {
-            const response = await axios.get(`http://localhost:4001/products/search?term=${searchTerm}`);
+            const response = await axios.get(`http://localhost:4001/products/search?term=${searchTerm}&categories=${selectedCategories}&types=${selectedTypes}&rating=${selectedRating}&price_range=${JSON.stringify(priceRange)}&sort_by=${sortOption}`);
             setSearchResults(response.data);
-            setFilteredResults(response.data);
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
@@ -49,78 +56,51 @@ const SearchResult = () => {
         }
     };
 
+    const handleApply = () => {
+        setShowSkeleton(true);
+        fetchSearchResults().then(() => setShowSkeleton(false));
+    };
+
+    const resetParams = async () => {
+        setSelectedTypes(typeParam);
+        setSelectedRating(ratingParam);
+        setPriceRange(priceParam);
+        setSelectedCategories(categoryParam);
+        setSortOption(sortParam);
+    };
+
+    const handleClear = () => {
+        setReset(true);
+        resetParams();
+    };
+
     useEffect(() => {
         fetchCategories();
         fetchTypes();
     }, []);
 
     useEffect(() => {
-        fetchSearchResults();
+        handleApply();
     }, [searchTerm]);
 
-    const applySorting = (results, option) => {
-        let sortedResults = [...results];
-        switch (option) {
-            case 'price-asc':
-                sortedResults.sort((a, b) => a.new_price - b.new_price);
-                break;
-            case 'price-desc':
-                sortedResults.sort((a, b) => b.new_price - a.new_price);
-                break;
-            case 'rating':
-                sortedResults.sort((a, b) => b.averageRating - a.averageRating);
-                break;
-            case 'name-desc':
-                sortedResults.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-            default:
-                sortedResults.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-        }
-        return sortedResults;
-    };
-
-    const applyFiltering = (results) => {
-        let filteredResults = [...results];
-
-        // Filter by multiple categories
-        if (selectedCategories.length > 0) {
-            filteredResults = filteredResults.filter(product =>
-                product.category && product.category.some(catId => selectedCategories.includes(catId))
-            );
-        }
-
-        // Filter by multiple types
-        if (selectedTypes.length > 0) {
-            filteredResults = filteredResults.filter(product =>
-                product.type && product.type.some(typeId => selectedTypes.includes(typeId))
-            );
-        }
-
-        // Filter by rating
-        if (selectedRating) {
-            filteredResults = filteredResults.filter(product =>
-                product.averageRating >= parseFloat(selectedRating)
-            );
-        }
-
-        // Filter by price range
-        if (priceRange.min || priceRange.max) {
-            filteredResults = filteredResults.filter(product => {
-                const price = product.new_price;
-                return (!priceRange.min || price >= parseFloat(priceRange.min)) &&
-                    (!priceRange.max || price <= parseFloat(priceRange.max));
-            });
-        }
-
-        return filteredResults;
-    };
-
+    // Trigger handleApply after all states are updated
     useEffect(() => {
-        let results = applyFiltering(searchResults);
-        results = applySorting(results, sortOption);
-        setFilteredResults(results);
-    }, [searchResults, sortOption, selectedCategories, selectedTypes, selectedRating, priceRange]);
+        if (reset){
+            setReset(false);
+            if(
+            selectedCategories === categoryParam &&
+            selectedTypes === typeParam &&
+            selectedRating === ratingParam &&
+            priceRange === priceParam &&
+            sortOption === sortParam
+            ) {
+                handleApply();
+            }
+        }
+        else{
+            handleApply();
+        }
+    }, [selectedCategories, selectedRating, selectedTypes, priceRange, sortOption, reset]);
 
     return (
         <div className="searchresults">
@@ -144,7 +124,7 @@ const SearchResult = () => {
                     <div className="searchresults-left-rating">
                         <p>Rating</p>
                         <select value={selectedRating} onChange={(e) => setSelectedRating(e.target.value)}>
-                            <option value="">All Ratings</option>
+                            <option value="0">All Ratings</option>
                             <option value="1">1 star & up</option>
                             <option value="2">2 stars & up</option>
                             <option value="3">3 stars & up</option>
@@ -216,6 +196,11 @@ const SearchResult = () => {
                             </div>
                         ))}
                     </div>
+
+                    <div className='searchresults-left-ctrl'>
+                        <button className="searchresults-left-apply" onClick={handleApply}>Apply</button>
+                        <button className="searchresults-left-clear" onClick={handleClear}>Clear</button>
+                    </div>
                 </div>
 
                 <div className="searchresults-right">
@@ -225,7 +210,7 @@ const SearchResult = () => {
                         <p className="searchresults-header-sort">
                             Sort by :
                             <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-                                <option value="">A to Z</option>
+                                <option value="name-asc">A to Z</option>
                                 <option value="name-desc">Z to A</option>
                                 <option value="price-asc">Price: Low to High</option>
                                 <option value="price-desc">Price: High to Low</option>
@@ -233,8 +218,9 @@ const SearchResult = () => {
                             </select>
                         </p>
                     </div>
+                    
                     <div className="searchresults-products">
-                        <ProductsDisplay products={filteredResults} fromSearch={true}/>
+                        <ProductsDisplay products={searchResults} showSkeleton={showSkeleton} />
                     </div>
                 </div>
             </div>

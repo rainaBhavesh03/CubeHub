@@ -13,8 +13,12 @@ const Register = () => {
     const navigate = useNavigate();
 
     const handleRegister = async () => {
+        if(!email || email === undefined || !username || username === undefined){
+            alert('Please enter all details!');
+            return;
+        }
         try {
-            const response = await axios.post('http://localhost:4001/auth/register-beforeOtp', { email });
+            const response = await axios.post('http://localhost:4001/auth/register-beforeOtp', { email, username });
             
             console.log(response);
             if(response){

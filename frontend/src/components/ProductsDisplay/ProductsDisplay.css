@@ -4,6 +4,7 @@
     flex-wrap: wrap;
     background: #ddd;
     padding: 5px;
+    overflow: hidden;
 }
 
 .productsdisplay-item {
@@ -13,6 +14,10 @@
     background: #fff;
     margin: 1px;
     min-width: 230px;
+}
+.productsdisplay-item:hover {
+    box-shadow: 0px 0px 100px -30px blue;
+    z-index: 2;
 }
 .productsdisplay-link {
     text-decoration: none;
@@ -28,10 +33,6 @@
     font-size: 14px;
     color: #999;
     font-style: italic;
-}
-.productsdisplay-item-fromSearch {
-}
-.productsdisplay-item-notFromSearch {
 }
 
 .productsdisplay-item-container {

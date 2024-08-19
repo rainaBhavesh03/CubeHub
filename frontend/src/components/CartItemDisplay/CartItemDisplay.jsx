@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 import './CartItemDisplay.css';
 import { CartContext } from "../../context/CartContext";
 import Decimal from "decimal.js";
+import Skeleton from "../Skeleton/Skeleton";
 
-const CartItemDisplay = ({ item }) => {
-    const [product, setProduct] = useState({});
+const CartItemDisplay = ({ item=null }) => {
+    const [product, setProduct] = useState(null);
     const { addItemToCart, removeItemFromCart, deleteItemFromCart } = useContext(CartContext);
+
+    const [showSkeleton, setShowSkeleton] = useState(true);
 
     const fetchProductDetails = async () => {
         try {
@@ -28,13 +31,36 @@ const CartItemDisplay = ({ item }) => {
     }
 
     useEffect(() => {
-        fetchProductDetails();   
+        setShowSkeleton(true);
+        if(item !== null && item !== undefined)
+            fetchProductDetails().then(() => setShowSkeleton(false));   
     }, [])
 
     return (
-        <>
-            {Object.keys(product).length > 0 ? (
-                <div key={product._id} className="cartitemdisplay">
+        <div className="cartitemdisplay">
+            {showSkeleton ? (
+                <div className="cartitemdisplay-wrapper">
+                    <div className="cartitemdisplay-left">
+                        <Skeleton height={100} width={100} />
+                    </div>
+                    <div className="cartitemdisplay-right">
+                        <div className="cartitemdisplay-top">
+                            <Skeleton height={24} width={120} />
+                        </div>
+                        <div className="cartitemdisplay-bottom">
+                            <Skeleton height={16} width={50} />
+                        </div>
+                    </div>
+                    <div className="cartitemdisplay-options">
+                        <Skeleton height={40} width={100} />
+                        <Skeleton height={20} width={50} />
+                    </div>
+                    <div className="cartitemdisplay-total">
+                        <Skeleton height={20} width={120} />
+                    </div>
+                </div>
+            ) : (
+                <div className="cartitemdisplay-wrapper">
                     <div className="cartitemdisplay-left">
                         <Link className="cartitemdisplay-link" to={`/product/${encodeURIComponent(product._id)}`} state={{ currProduct: product }} >
                             <img className="cartitemdisplay-link-img" src={product.images[0]} alt='image' />
@@ -63,10 +89,8 @@ const CartItemDisplay = ({ item }) => {
                         <p>{new Decimal(item.quantity).mul(new Decimal(item.price)).toFixed(2)}</p>
                     </div>
                 </div>
-            ) : (
-                <p>Loading</p>
             )}
-        </>
+        </div>
     )
 }
 

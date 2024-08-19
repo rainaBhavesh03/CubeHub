@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router';
 
 const AuthContext = createContext({
     isLoggedIn: false,
+    isLoading: true,
     user: {},
     login: () => {},
     logout: () => {},
@@ -14,6 +15,7 @@ const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -21,6 +23,7 @@ const AuthProvider = ({ children }) => {
     const protectedRoutes = ['/admin', '/checkout', '/login'];
 
     useEffect(() => {
+        setIsLoading(true);
         if(!user){
             getUser();
         }
@@ -31,6 +34,7 @@ const AuthProvider = ({ children }) => {
         if(isProtected){
             checkProtected(currentPath);
         }
+        setIsLoading(false);
     }, [location.pathname]);
 
     const checkProtected = async (currentPath) => {
@@ -41,11 +45,7 @@ const AuthProvider = ({ children }) => {
                 navigate('/');
         }
         else {
-            console.log('inside catch');
             if(currentPath !== '/login'){
-                setIsLoggedIn(false);
-                setUser(null);
-                alert('Please login first!!');
                 navigate('/login');
             }
         }
@@ -82,7 +82,6 @@ const AuthProvider = ({ children }) => {
         }
         catch (err){
             console.error('Not verified', err);
-
             return false;
         }
     }
@@ -125,6 +124,7 @@ const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 isLoggedIn,
+                isLoading,
                 user,
                 login,
                 logout,

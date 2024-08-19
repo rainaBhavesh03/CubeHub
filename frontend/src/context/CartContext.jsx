@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { AuthContext } from './AuthContext';
 
 const CartContext = createContext({
+    showSkeleton: true,
     cart: {},
     getCart: () => {},
     addItemToCart: () => {},
@@ -14,12 +15,17 @@ const CartContext = createContext({
 const CartProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [cart, setCart] = useState(null);
+    const [showSkeleton, setShowSkeleton] = useState(true);
 
     useEffect(() => {
-        if(user)
-            getCart();
-        else
+        setShowSkeleton(true);
+        if(user){
+            getCart().then(() => setShowSkeleton(false));
+        }
+        else{
             setCart(null);
+            setShowSkeleton(false);
+        }
     }, [user]);
 
     const getCart = async () => {
@@ -48,8 +54,9 @@ const CartProvider = ({ children }) => {
             });
 
             setCart(response.data.userCart);
+            return {status: response.status, message: response.data.message};
         } catch (error) {
-            console.error(error);
+            return {status: error.response.status, message: error.response.data.error};
         }
     };
 
@@ -63,8 +70,9 @@ const CartProvider = ({ children }) => {
             });
             
             setCart(response.data.userCart);
+            return {status: response.status, message: response.data.message};
         } catch (error) {
-            console.error(error);
+            return {status: error.response.status, message: error.response.data.error};
         }
     };
 
@@ -78,14 +86,16 @@ const CartProvider = ({ children }) => {
             });
 
             setCart(response.data.userCart);
+            return {status: response.status, message: response.data.message};
         } catch (error) {
-            console.error(error);
+            return {status: error.response.status, message: error.response.data.error};
         }
     };
 
     return (
         <CartContext.Provider
             value={{
+                showSkeleton,
                 cart,
                 getCart,
                 addItemToCart,
