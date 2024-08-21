@@ -12,14 +12,18 @@ const Cart = () => {
     const { isLoggedIn } = useContext(AuthContext);
     const { showSkeleton, cart } = useContext(CartContext);
 
+    const handleCtnShop = () => {
+        navigate('/search-results');
+    };
+
     return (
-        <div className="cart-wrapper">
+        <div className="cart">
             {!isLoggedIn ? (
-                <div className="cart-content">
+                <div className="cart-wrapper">
                     <p className="cart-message">Login to access your cart!</p>
                 </div>
             ) : showSkeleton ? (
-                <div className="cart-content">
+                <div className="cart-wrapper">
                     <div className="cart-left">
                         <Skeleton height={26} width={100} />
                         <CartItemDisplay />
@@ -35,7 +39,7 @@ const Cart = () => {
                     </div>
                 </div>
             ) : cart && cart.items.length > 0 ? (
-                <div className="cart-content">
+                <div className="cart-wrapper">
                     <div className="cart-left">
                         <p className="cart-title">My Cart :</p>
                         {cart.items.map((item) => (
@@ -52,8 +56,11 @@ const Cart = () => {
                     </div>
                 </div>
             ) : (
-                <div className="cart-content">
-                    <p className="cart-empty">No products in your cart! Continue to shop...</p>
+                <div className="cart-wrapper">
+                    <div className="cart-empty">
+                        <p className="cart-empty-msg">No products in your cart!</p>
+                        <button className="cart-empty-btn" onClick={handleCtnShop}>Continue to Shop</button>
+                    </div>
                 </div>
             )}
         </div>

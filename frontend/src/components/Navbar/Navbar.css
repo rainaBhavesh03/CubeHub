@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 60px;
+    padding: 15px 60px;
     box-shadow: 0 1px 3px -2px #000;
     margin-bottom: 1px;
     background: white;
@@ -12,12 +12,80 @@
 }
 
 .navbar-logo {
-    width: 80px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.navbar-logo img {
+    height: 60px;
+    width: 60px;
+    margin: 0 5px;
+}
+.navbar-logo img:hover {
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s ease-out;
+    animation: spin 1s ease-out;
+}
+@-moz-keyframes spin { 
+    100% { -moz-transform: rotate(360deg); } 
+}
+@-webkit-keyframes spin { 
+    100% { -webkit-transform: rotate(360deg); } 
+}
+@keyframes spin { 
+    100% { 
+        -webkit-transform: rotate(360deg); 
+        transform:rotate(360deg); 
+    } 
+}
+.navbar-logo span {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: serif;
 }
 
-.nav-profile {
-    width: 75px
+.navbar-admin {
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.navbar-search {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.navbar-search input {
+    outline: none;
+    font-size: 16px;
+    padding: 10px 45px 10px 20px;
+    border-radius: 20px;
+    min-width: 420px;
+}
+.navbar-search img {
+    position: absolute;
+    content: '';
+    height: 20px;
+    width: 20px;
+    right: 45px;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 8px;
+}
+.navbar-search img:hover {
+    background: #c8c8c8;
+}
+.navbar-search svg {
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 8px;
+}
+.navbar-search svg:hover {
+    background: #ddd;
 }
 
 .navbar-cart {
@@ -58,3 +126,17 @@
     }
 }
 
+
+.navbar-btn {
+    outline: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    background: #ddd;
+    font-weight: 600;
+    cursor: pointer;
+}
+.navbar-btn:hover {
+    background: #c8c8c8;
+}

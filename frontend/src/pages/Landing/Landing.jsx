@@ -8,15 +8,17 @@ import './Landing.css';
 const Landing = () => {
     // Webpack require.context to dynamically import all banner images
     const importAll = (r) => r.keys().map(r);
-    const [banners, setBanners] = useState(importAll(require.context('../../assets/banners/', false)));
+    const banners = importAll(require.context('../../assets/banners/', false));
     const [bannerIdx, setBannerIdx] = useState(0);
     const [searchResults, setSearchResults] = useState([]);
     const [prodByRating, setProdByRating] = useState([]);
+    const [isActive, setIsActive] = useState(true);
     const maxToShow = 3;
 
     const navigate = useNavigate();
 
     const handleCarouselClick = (index) => {
+        setIsActive(false);
         setBannerIdx(index);
     }
 
@@ -59,9 +61,35 @@ const Landing = () => {
     }, []);
     
     useEffect(() => {
-        console.log(searchResults);
         setProdByRating(filterByRating());
     }, [searchResults]);
+
+    useEffect(() => {
+        if(isActive){
+            const interval = setInterval(() => {
+                if(bannerIdx === banners.length-1)
+                    setBannerIdx(0);
+                else
+                    setBannerIdx(bannerIdx+1);
+            }, 3000);
+
+            return () => {
+                if(interval)
+                    clearInterval(interval);
+            };
+        }
+    }, [bannerIdx, isActive]);
+
+    useEffect(() => {
+        if(!isActive){
+            const delay = setInterval(() => setIsActive(true), 3000);
+
+            return () => {
+                if(delay)
+                    clearInterval(delay);
+            };
+        }
+    }, [isActive]);
 
     return (
         <div className='landing'>
@@ -82,7 +110,11 @@ const Landing = () => {
                         <p className='landing-byrating-title' >By Rating :</p>
                         <button className='landing-byrating-btn' onClick={handleRatingClick}>See More</button>
                     </div>
-                    <ProductsDisplay products={prodByRating} showSkeleton={false} />
+                    {prodByRating.length === 0 ? (
+                        <ProductsDisplay products={[]} showSkeleton={true} />
+                    ) : (
+                        <ProductsDisplay products={prodByRating} showSkeleton={false} />
+                    )}
                 </div>
             </div>
         </div>
