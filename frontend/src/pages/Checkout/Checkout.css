@@ -1,0 +1,134 @@
+.checkout {
+    background: #bbb;
+    display: flex;
+    justify-content: center;
+}
+
+.checkout-wrapper {
+    width: 70%;
+    display: flex;
+    padding-block: 60px 100px;
+    gap: 50px;
+    justify-content: center;
+}
+
+.checkout-left {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    align-items: flex-start;
+    padding: 20px 40px;
+    background: #eee;
+    border: 2px solid #d8d8d8;
+    border-radius: 15px;
+}
+.checkout-header {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 20px 20px 40px 20px;
+}
+.checkout-formdiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+.checkout-formdiv2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.checkout-left input {
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    margin: 10px 0;
+    width: 100%;
+}
+.checkout-left input:disabled {
+    background: #ddd;
+}
+#checkout-address {
+    flex: 1 1;
+}
+#checkout-pincode {
+    flex: 0.3 0.3;
+}
+.checkout-left button {
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    background: #0055ff;
+    cursor: pointer;
+    margin-block: 40px 20px;
+    width: 60%;
+}
+.checkout-left button:hover {
+    background: #0077ff;
+}
+
+.checkout-right {
+    width: 30%;
+}
+.checkout-right-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 30px;
+    background: #fff;
+    border: 2px solid #d8d8d8;
+    border-radius: 15px;
+}
+.checkout-right-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-block: 15px 30px;
+    font-size: 20px;
+    font-weight: 500;
+}
+.checkout-right-btn {
+    outline: none;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #ff7700;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.checkout-right-btn:hover {
+    background: #ff8800;
+}
+.checkout-right-middle {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    padding-block: 0 20px;
+    border-bottom: 2px solid #ccc;
+}
+.checkout-right-middlediv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    margin: 5px 0;
+}
+.checkout-right-bottom {
+    font-weight: 500;
+    font-size: 18px;
+    margin: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}

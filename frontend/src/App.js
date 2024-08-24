@@ -18,7 +18,7 @@ import Footer from './components/Footer/Footer';
 const App = () => {
     const location = useLocation();
     const noHeader = ['/login', '/register', '/forgot-password', '/reset-password'];
-    const noFooter = ['/login', '/register', '/forgot-password', '/reset-password', '/checkout'];
+    const noFooter = ['/login', '/register', '/forgot-password', '/reset-password'];
 
     return (
         <AuthProvider>
